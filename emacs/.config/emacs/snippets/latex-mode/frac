@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \frac{num}{den}
+# key: frr
+# condition: 'auto
+# group: math
+# --
+\frac{${1:num}}{${2:den}}$0

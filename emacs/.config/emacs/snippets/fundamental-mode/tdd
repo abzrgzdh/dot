@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: TODO
+# key: tdd
+# condition: 'auto
+# --
+TODO$0

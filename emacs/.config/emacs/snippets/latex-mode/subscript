@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: _{...}
+# key: ;;
+# condition: 'auto
+# group: math
+# --
+_{$1}$0

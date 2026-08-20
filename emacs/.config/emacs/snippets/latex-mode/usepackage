@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: \usepacakge{...}
+# key: pack
+# --
+\usepackage{$1}$0

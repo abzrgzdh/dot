@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \textbf{...}
+# key: tbb
+# condition: 'auto
+# group: font
+# --
+\textbf{$1}$0
