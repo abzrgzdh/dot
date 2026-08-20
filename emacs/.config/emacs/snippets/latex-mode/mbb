@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \mathbf{...}
+# key: mbb
+# condition: 'auto
+# group: math
+# --
+\mathbf{$1}$0

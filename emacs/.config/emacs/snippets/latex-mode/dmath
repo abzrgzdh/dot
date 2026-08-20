@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: \[...\]
+# key: eqq
+# condition: 'auto
+# group: math
+# --
+\\[
+$1
+\\]
+$0

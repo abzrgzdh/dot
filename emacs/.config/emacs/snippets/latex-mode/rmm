@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: {\rm ...}
+# key: rmm
+# condition: 'auto
+# group: math
+# --
+{\rm $1}$0

@@ -5,32 +5,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("f1c8202c772d1de83eda4765fe21429a528a4fb350a28394d3705fe9678ed1f9"
-     "deb645f30fd25191b6e8d0f397cc1dd172a352f22094747be2ff527394cc9f57"
-     "adb567dc2208b9e95ce3bc1930bf0e84a3eced91e674b4c35777e54650a60763"
-     "79b922b0d10d379c8d0e8db0f05f0eec98ed4a50cb7e199c97b0369d19e89d49"
-     "d8b8c09a745470f6c088dce5df19ade98894f4ced69ce32d53aded94d512826d"
-     "9777774c632c27aafcd20e969626f87177e3d3ff526badd4bec90b33ed3ab73b"
-     "99768190047342cd4a93fa9b60a9998130cdbffcb76d0f63b092c9853ac580f1"
-     "6e997b82088ff71241308f9f8d01b1ce47e864a2a0577986e278dca0b5e0e54f"
-     "dea106ab256a8017a325f51f01b1131915989fa25db48eb831ffb18dac8ecd39"
-     "661f3ff21fd9adc9facde2b11cbdeef5f1f2d482e98a456b11922bf55653ceac"
-     "3f106811a7502dcca1b7b54686d3fafb2210cb9e27a8b5acbb71b8987a58fe60"
-     "b58b5aa5664a927866daa481ae5f0795423ed3982ce5f64e56c4106261dbd13e"
-     "308fc0c8cee43c5fccf3efa360c9cdf7d6bbbebc5c2f76850f1b1c8ac8fbaca0"
-     "5ce25e045ab0c4a295058d6f2bec71c0fb15e1ec3accea21a4d9926684544ac6"
-     "de024183b38fe74c127a4a4fdb79b10c5e86d512547675faa5b0bfadc1805004"
-     "5b01334cb330cd69e5f3d6214521c9f9d703d1c31ca0f4f04f36b6cf9f4870c8"
-     "6ac2faf17d4d37b6f4bc08203b70e82f4b3b5ce76f102fb4802b3f6c74460743"
-     "09276f492e8e604d9a0821ef82f27ce58b831f90f49f986b4d93a006c12dbcdb"
-     "09b833239444ac3230f591e35e3c28a4d78f1556b107bafe0eb32b5977204d93" default))
+   '("831c717eef42e881bc7da8a5fa9b4ccb9eeabb230d91f0d86a6145b53c334924"
+     "23f7b1be135da821096069701680dc32d7951389ffb764238483e2afb98b5f40"
+     "690e8c96acf5bcf432f1e04cd6384b574e188e44b1d1175451bf155c580e7d66" default))
  '(package-selected-packages
-   '(acme-theme benchmark-init cmake-mode dockerfile-mode edit-indirect
-                edit-redirect gnuplot imenu-list magit markdown-mode
-                multiple-cursors naysayer-theme no-littering plan9-theme
-                sqlite-mode-extras sqlite3 undo-fu visual-fill-column vundo
-                zenburn-theme))
- '(safe-local-variable-values '((gnuplot-basic-offset . 4))))
+   '(atomic-chrome auctex beacon benchmark-init cdlatex citar cmake-mode company
+                   denote dired-subtree edit-indirect elfeed-goodies
+                   expand-region gnuplot hl-todo jinx magit markdown-mode
+                   modus-themes move-text multiple-cursors naysayer-theme
+                   paredit psession undo-fu undo-fu-session visible-mark vundo
+                   yasnippet)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

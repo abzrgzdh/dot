@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \emph{...}
+# key: emm
+# condition: 'auto
+# group: font
+# --
+\emph{$1}$0

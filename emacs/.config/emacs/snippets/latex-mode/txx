@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \text{...}
+# key: txx
+# condition: 'auto
+# group: math
+# --
+\text{$1}$0

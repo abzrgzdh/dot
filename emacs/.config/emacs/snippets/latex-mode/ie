@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: i.e.,
+# key: iee
+# condition: 'auto
+# group: abbrev
+# --
+i.e., $0

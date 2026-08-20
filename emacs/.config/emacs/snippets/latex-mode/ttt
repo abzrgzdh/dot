@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \texttt{...}
+# key: ttt
+# condition: 'auto
+# group: font
+# --
+\texttt{$1}$0

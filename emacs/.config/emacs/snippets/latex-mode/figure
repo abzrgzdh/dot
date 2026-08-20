@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: \begin{figure} ... \end{figure}
+# key: fig
+# --
+\begin{figure${1}}[${2:ht}]
+  \centering
+  \includegraphics[width=\linewidth]{$3}
+  \caption{$0}
+\end{figure${1}}

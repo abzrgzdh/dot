@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \partial
+# key: pp
+# condition: 'auto
+# group: math
+# --
+\partial
