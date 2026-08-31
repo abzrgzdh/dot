@@ -319,7 +319,7 @@ paragraph back into one long line."
 (use-package expand-region
   :ensure t
   :bind (("C-=" . er/expand-region)
-         ("C-S-=" . er/contract-region)))
+         ("C-M-=" . er/contract-region)))
 
 
 
