@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Switch theme (MacOS)
+
+usage() {
+  echo "Usage: theme [dark|light]"
+  exit 1
+}
+
+current_theme() {
+  if defaults read -g AppleInterfaceStyle >/dev/null 2>&1; then
+    echo dark
+  else
+    echo light
+  fi
+}
+
+set_theme() {
+  local mode="$1"
+
+  case "$mode" in
+    dark)
+      osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+      ;;
+    light)
+      osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to false'
+      ;;
+    *)
+      usage
+      ;;
+  esac
+}
+
+toggle_theme() {
+  case "$(current_theme)" in
+    dark) set_theme light ;;
+    light) set_theme dark ;;
+  esac
+}
+
+case "${1:-toggle}" in
+  toggle)
+    toggle_theme
+    ;;
+  dark|light)
+    if [[ "$(current_theme)" != "$1" ]]; then
+      set_theme "$1"
+    fi
+    ;;
+  *)
+    usage
+    ;;
+esac
