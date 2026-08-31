@@ -25,3 +25,16 @@ zle -N fg-widget
 bindkey -M emacs "^Z" fg-widget
 bindkey -M vicmd "^Z" fg-widget
 bindkey -M viins "^Z" fg-widget
+
+# # Print current working directory when
+# magic-enter () {
+#   if [[ -z $BUFFER ]]
+#   then
+#     printf "\ncwd: %s\n" "$PWD"
+#     zle reset-prompt
+#   else
+#     zle accept-line   # Execute the command
+#   fi
+# }
+# zle -N magic-enter
+# bindkey "^M" magic-enter

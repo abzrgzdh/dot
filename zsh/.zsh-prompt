@@ -1,0 +1,45 @@
+# Before execution of every command run the following (hook) function
+function preexec() {
+  timer=$(($(gdate +%s%0N)/1000000))
+}
+
+# Before drawing prompt run the following (hook) function
+function precmd() {
+    # source: https://gist.github.com/knadh/123bca5cfdae8645db750bfb49cb44b0?p\
+    #         ermalink_comment_id=3424463#gistcomment-3424463
+    local elapsed
+    if [ $timer ]; then
+        local now=$(date +%s%3N)
+        local d_ms=$(($now-$timer))
+        local d_s=$((d_ms / 1000))
+        local ms=$((d_ms % 1000))
+        local s=$((d_s % 60))
+        local m=$(((d_s / 60) % 60))
+        local h=$((d_s / 3600))
+
+        if ((h > 0)); then
+            elapsed=${h}h${m}m
+        elif ((m > 0)); then
+            elapsed=${m}m${s}s
+        elif ((s >= 10)); then
+            elapsed=${s}.$((ms / 100))s
+        elif ((s > 0)); then
+            elapsed=${s}.$((ms / 10))s
+        else
+            elapsed=${ms}ms
+        fi
+
+        RPROMPT="(${elapsed})${BASE_RPROMPT}"
+        unset timer
+    fi
+}
+
+# PROMPT='%m%(?..%S!%s)%# '
+PROMPT='%F{magenta}%~%f %F{%(?.white.red)}%%%f '
+# PROMPT='%B%1~%b %F{%(?..red)}%%%f '
+
+local error_code="%(?..(%S%?%s%))"
+local num_jobs="%(1j.(j:%j%).)"
+local shlvl="%(2L.(shlvl:%L%).)"
+BASE_RPROMPT="${error_code}${num_jobs}${shlvl}"
+RPROMPT="${BASE_RPROMPT}"

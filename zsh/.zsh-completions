@@ -43,13 +43,6 @@ else
 fi
 
 
-# fpath=(~/.zsh/completion $fpath)
-# fpath=(~/.zsh/completion/cmake $fpath)
-# fpath=(~/.zsh/completion/docker $fpath)
-# fpath=(~/.zsh/completion/rust $fpath)
-# fpath=(~/.zsh/completion/curl $fpath)
-
-
 # Configure the order in which Zsh's completion engine tries different
 # completion strategies (called "completers") when you hit Tab.
 #
@@ -89,26 +82,25 @@ zstyle      ':completion:*:*:make:*'                tag-order      'targets'
 zstyle -e   ':completion:*'                         special-dirs   '[[ $PREFIX = (../)#(..) ]] && reply=(..)'
 zstyle      ':completion:*:complete:(cd|pushd):*'   tag-order      'local-directories named-directories'
 
-# zstyle ':completion:*' group-name ''
-# zstyle ':completion:*:descriptions' format %F{green}%B%{$__USER[ITALIC_ON]%}--- %d \
-#                                            ---%{$__ALI[ITALIC_OFF]%}%b%f
-# zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
-# zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-# zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-# zstyle ':completion:*:*:-command-:*:*' group-order alias builtins functions commands
-#
-# zstyle ':completion:*:*:v:*' file-patterns \
-#     '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
-# zstyle ':completion:*:*:vi:*' file-patterns  \
-#     '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
-# zstyle ':completion:*:*:vim:*' file-patterns \
-#     '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
-# zstyle ':completion:*:*:nvim:*' file-patterns \
-#     '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
-# zstyle ':completion:*:*:python:*' file-patterns \
-#     '^(__pycache__|*.egg-info|build|venv|*.o|.pytest_cache|.git):directories'
-#
-# unset '_comps[source]'
-#
-# _comp_options+=(globdots)
-#
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format %B%{$__USER[ITALIC_ON]%}--- %d \
+                                           ---%{$__ALI[ITALIC_OFF]%}%b
+zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:*:-command-:*:*' group-order alias builtins functions commands
+
+zstyle ':completion:*:*:v:*' file-patterns \
+    '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
+zstyle ':completion:*:*:vi:*' file-patterns  \
+    '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
+zstyle ':completion:*:*:vim:*' file-patterns \
+    '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
+zstyle ':completion:*:*:nvim:*' file-patterns \
+    '^(__pycache__|*.egg-info|*.dSYM|.cache|main|build|venv|*.o|.pytest_cache|.git|*.pdf):directories'
+zstyle ':completion:*:*:python:*' file-patterns \
+    '^(__pycache__|*.egg-info|build|venv|*.o|.pytest_cache|.git):directories'
+
+unset '_comps[source]'
+
+_comp_options+=(globdots)

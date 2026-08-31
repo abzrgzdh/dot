@@ -10,33 +10,48 @@ alias -g WC='| wc -l'                                         # Mnemonic: "[W]c"
 alias -g HL='--help | less'                                   # Mnemonic: "[H]elp [L]ess"
 alias -g HG='--help 2>&1 | grep'                              # Mnemonic: "[H]elp [G]rep"
 
+alias cd=z
+alias cdi=zi
+
 alias o='open'
 compdef o=open
 
 alias g='git'
 compdef g=git
 
-alias \
-    v=nvim \
-    vimdiff="nvim -d"
-compdef v=nvim
+alias mk='make'
+compdef mk=make
 
 alias \
-    edit="emacsclient --alternate-editor='' -nc -F \"'(fullscreen . maximized)\"" \
-    e="edit"
+    v=$EDITOR \
+    vimdiff="$EDITOR -d" \
+    im=$EDITOR
+compdef v="nvim"
+# Open the last file edited/viewed by nvim
+# #<1 is the last file from the :oldfiles list (i.e. the most recent file you
+# visited before quitting
+alias vv='$EDITOR -c "edit #<1"'
+# or
+# ":normal '\''0" tells vim to jump to the file from mark 0, which is always the
+# last file you edited
+alias vv='$EDITOR -c "normal '\''0"'
+compdef vv="nvim"
+whim() {
+    command $EDITOR `which "$1"`
+}
+compdef whim=which
 
 alias \
-    ls='ls --group-directories-first -GCF --color=auto' \
+    ls='ls --group-directories-first -F --color=auto' \
     l='ls' \
     sl=ls \
-    ll='ls -lhtr' \
+    lh='ls -lhtr' \
+    ll='ls -lh' \
     la='ls -A'
+compdef ll=ls sl=ls la=ls l=ls
 
 # More verbosity
 alias \
-    cp='cp -iv' \
-    mv='mv -iv' \
-    rm='rm -v' \
     ln='ln -iv'
 
 # Sensible defaults
@@ -45,7 +60,9 @@ alias \
     type='type -a' \
     which='which -a' \
     mkd='mkdir -pv' \
-    grep='ggrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
+    grep='ggrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}' \
+    rg='rg --hidden --glob "!**/.git/**"'
+compdef grep=ggrep mkd=mkdir
 
 # Change directory easily
 alias \
@@ -54,50 +71,125 @@ alias \
     doc="cd ${XDG_DOCUMENTS_DIR:-$HOME/Documents}" \
     vid="cd ${XDG_VIDEOS_DIR:-$HOME/Movies}"
 
+alias \
+    cfz="$EDITOR $HOME/.zshrc" \
+    cfa="$EDITOR $HOME/.zsh-aliases" \
+    cfzf="$EDITOR $HOME/.zsh-functions" \
+    cfzp="$EDITOR $HOME/.zprofile" \
+    cft="$EDITOR $HOME/.tmux.conf" \
+    cfg="$EDITOR $HOME/.config/ghostty/config" \
+    cfA="$EDITOR $HOME/.config/alacritty/alacritty.toml" \
+    cftor="$EDITOR /opt/homebrew/etc/tor/torrc"
+
 # Directory stack navigation
+setopt auto_pushd
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 
-# OpenFOAM
-alias of2412="source ~/OpenFOAM/OpenFOAM-v2412/etc/bashrc"
-alias of2312='source ~/OpenFOAM/OpenFOAM-v2312/etc/bashrc'
-alias of9="source ~/OpenFOAM/OpenFOAM-9/etc/bashrc"
+
+# --- OpenFOAM ---
+
+of2412() {
+    source ~/code/OpenFOAM-v2412/etc/bashrc || return 1
+    [ -d ~/.OpenFOAM ] || return 1
+    echo "$WM_PROJECT_VERSION" > ~/.OpenFOAM/currentSourceVersion
+}
+of2312() {
+    source ~/code/opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc || return 1
+    [ -d ~/.OpenFOAM ] || return 1
+    echo "$WM_PROJECT_VERSION" > ~/.OpenFOAM/currentSourceVersion
+}
+of9() {
+    source ~/code/opt/OpenFOAM/OpenFOAM-9/etc/bashrc || return 1
+    [ -d ~/.OpenFOAM ] || return 1
+    echo "$WM_PROJECT_VERSION" > ~/.OpenFOAM/currentSourceVersion
+}
+
+of() {
+    if ! [ -e ~/.OpenFOAM/currentSourceVersion ]; then
+        echo "~/.OpenFOAM/currentSourceVersion Not found."
+        echo "Please source one OpenFOAM version first manually."
+        return 1
+    fi
+    currentSourceVersion="$(cat ~/.OpenFOAM/currentSourceVersion)"
+    if [ -z "$currentSourceVersion" ]; then
+        echo "No OpenFOAM environment was previously loaded."
+        echo "~/.OpenFOAM/currentSourceVersion is empty."
+        return 1
+    fi
+    source /Volumes/code/thirdparty/OpenFOAM/OpenFOAM-${currentSourceVersion}/etc/bashrc
+    echo "OpenFOAM-$currentSourceVersion"
+}
+
+alias fvc="[ -e ./system/fvSchemes ] && $EDITOR ./system/fvSchemes"
+alias fvs="[ -e ./system/fvSolution ] && $EDITOR ./system/fvSolution"
+alias cnd="[ -e ./system/controlDict ] && $EDITOR ./system/controlDict"
+alias blm="[ -e ./system/blockMeshDict ] && $EDITOR ./system/blockMeshDict"
+alias zu="[ -e ./0/U ] && $EDITOR ./0/U"
+alias zp="[ -e ./0/U ] && $EDITOR ./0/p"
 
 # Paraview
 paraview () {
     local _paraviews=(/Applications/[Pp][Aa][Rr][Aa][Vv][Ii][Ee][Ww]*.app)
     $_paraviews/Contents/MacOS/paraview "$@"
 }
+pvserver () {
+    local _paraviews=(/Applications/[Pp][Aa][Rr][Aa][Vv][Ii][Ee][Ww]*.app)
+    $_paraviews/Contents/bin/pvserver "$@"
+}
+pvpython () {
+    local _paraviews=(/Applications/[Pp][Aa][Rr][Aa][Vv][Ii][Ee][Ww]*.app)
+    $_paraviews/Contents/bin/pvpython "$@"
+}
 alias paraFoam="touch foam.foam && paraview foam.foam"
+# alias para='paraFoam >/dev/null 2>&1 &; disown %%'
+# alias para='touch case.foam && open -n case.foam'
+# alias para2='touch case.foam && open case.foam'
 
 # Other CAD
 alias ovito='/Applications/Ovito.app/Contents/MacOS/ovito'
 alias freecad='/Applications/FreeCAD.app/Contents/MacOS/FreeCAD'
 
 # MISC.
-alias rcp='rsync -avh --progress'
-alias wget='wget --hsts-file ~/.cache/wget-hsts'
-alias rwget='wget -c --read-timeout=5 --timeout=5 --tries=0'
 alias pydoc='python -m pydoc'
 alias path='echo $PATH | tr -s ":" "\n"'
 alias vpn="export https_proxy=http://localhost:8081 http_proxy=http://localhost:8081"
 alias vtor="export https_proxy=http://localhost:9080 http_proxy=http://localhost:9080"
+alias vsocks="export https_proxy=socks5://localhost:9050 http_proxy=socks5://localhost:9050"
+alias vmhrv="export https_proxy=http://localhost:8085 http_proxy=http://localhost:8085"
 alias unvpn="unset http_proxy https_proxy"
 alias more='less -Xe'
 alias calc='python -i -c "from math import *; import os; print(\"WELCOME TO CALC\")"'
 alias pp='python -i -c "from pprint import pprint"'
-alias hss='hugo server --noHTTPCache --disableFastRender'
-alias pg='ping google.com'
+alias hss='hugo server --buildDrafts --noHTTPCache --disableFastRender --port 8080'
+alias pg='ping -o google.com'
+alias pgg='ping google.com'
 alias yamlcheck='python -c "import sys, yaml as y; y.safe_load(open(sys.argv[1]))"'
 alias jsoncheck='jq "." >/dev/null <'
-alias p=python
 alias mlkit='vact ~/opt/mlkit/mlkit-3.10/'
 alias va=vact
 alias brew='HOMEBREW_NO_VERIFY_ATTESTATIONS=1 command brew'
 alias n=neomutt
-alias news=newsboat
+alias nb=newsboat
 alias torlog='tail -f /opt/homebrew/var/log/tor.log'
 alias bat='bat -pn'
+
+alias rcp='rsync -avh --progress'
+alias rmv='rsync -avh --progress --delay-updates --remove-source-files'
+compdef rcp=rsync
+compdef rmv=rsync
+
+alias wget='wget --hsts-file ~/.cache/wget-hsts'
+alias wgetc='wget -c'
+alias rwget='wget -c --read-timeout=5 --timeout=5 --tries=0'
+alias wwget='wget -c --read-timeout=0 --timeout=0 --tries=0'  # wait infintely (useful when it takes a long time to make connection)
+alias wgeturls='wget -c -i urls'
+alias wgetclip='wget -c "$(pbpaste)"'
+compdef rwget=wget
+
+alias p=python
+compdef p=python
+
 
 # [ -e $HOME/.hpc.nit ] && source $HOME/.hpc.nit
 
@@ -108,3 +200,23 @@ alias bat='bat -pn'
 #     alias asm='docker start --interactive --attach angry_bhabha'
 #     alias u18='docker start -v $HOME/.local/share/docker-share/ubuntu18:/home/user'
 # fi
+
+alias dush='du -sh * | sort -h'
+
+alias gcc=gcc-15
+
+alias ed='rlwrap -H "$HOME/.ed_history" ged --verbose --traditional --prompt=":"'
+
+alias ytdlpl='ytdl -pl -ar'
+
+alias octave='octave -q'
+
+alias ollama='OLLAMA_FLASH_ATTENTION="1" OLLAMA_KV_CACHE_TYPE="q8_0" ollama'
+
+# alias pdfmk='latexmk -dvi- -pdf -verbose -file-line-error -synctex=1 -interaction=nonstopmode -shell-escape -output-directory=build'
+
+# Julia Notebooks
+# Works only environments that have IJulia installed
+jn() {
+    julia --project=. -e 'using IJulia; notebook(dir="'"$1"'")'
+}

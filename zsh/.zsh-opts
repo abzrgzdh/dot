@@ -51,3 +51,18 @@ setopt list_packed
 setopt no_beep
 setopt list_types
 setopt no_menu_complete
+
+# Causes field splitting to be performed on unquoted parameter expansions.
+# (Similar behaviour as in bash)
+# NOTE: By default in zsh words of unquoted parameters are not automatically
+#       split on whitespace.
+# Example:
+#     A="1 2 3"
+#     printf "%s\n" "$A"
+#     stdout> 1 2 3 # OK
+#     printf "%s\n" $A
+#     stdout> 1 2 3 # (zsh)
+#     stdout> 1     # (bash)
+#             2
+#             3
+setopt sh_word_split

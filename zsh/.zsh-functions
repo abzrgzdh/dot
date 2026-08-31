@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# has some problem with OpenFoam
+
+# function cd() {
+#   builtin cd "$@"
+#   if ! [ "$1" = "-" ]; then
+#     pwd
+#   fi
+# }
+
 # -- Git ----------------------------------------------------------------------
 
 # `git` wrapper:
@@ -14,7 +23,6 @@
 # src: gh/wincent/wincent
 function git() {
   if [ $# -eq 0 ]; then
-    printf "On branch '%s'\n" $(command git branch --show-current | sed 's/\n//')
     command git status -sb
   elif [ "$1" = root ]; then
     shift
@@ -53,6 +61,7 @@ function git() {
   fi
 }
 
+
 # Worktree cd
 wcd() {
     wtpath=$(git worktree list | grep -v .bare | fzf --reverse | awk '{print $1}')
@@ -60,33 +69,6 @@ wcd() {
     [ -n "$wtpath" ] && cd "$wtpath"
 }
 
-# -- Web tools
-
-# Usage: serve [--directory DIRECTORY] [PORT]
-#
-# Defaults to port 8000, current directory (ie. will use index.html if present).
-#
-# src: gh/wincent/wincent
-# (https://github.com/wincent/wincent/blob/master/aspects/dotfiles/files/.zsh/functions)
-function serve() {
-  python3 -m http.server "$@"
-}
-
-# Print headers, following redirects.
-# Based on: https://stackoverflow.com/a/10060342/2103996
-# src: gh/wincent/wincent
-function headers() {
-  emulate -L zsh
-
-  if [ $# -ne 1 ]; then
-    echo "error: a host argument is required"
-    return 1
-  fi
-
-  local REMOTE=$1
-
-  curl -sSL -D - "$REMOTE" -o /dev/null
-}
 
 # -- Tmux ---------------------------------------------------------------------
 
@@ -145,120 +127,13 @@ function tmux() {
 }
 
 
-# -- Dictionary tools ---------------------------------------------------------
-
-# sdcv: Commandline dictionary
-# Dictionaries are located in ~/.local/share/stardict/dic/
-# brew install sdcv
-# src: Arch Wiki
-function def() {
-  [ $(tput cols) -lt 80 ] && local width=$(tput cols)
-  sdcv -n --utf8-output --color "$@" 2>&1 \
-  | sed 's/<br>/\n/g' \
-  | sed 's/<BR>/\n/g' \
-  | sed 's/|/\n/g' \
-  | sed -e 's/<[^>]*>//g' \
-  | fold -s -w ${width:-80} | \less -FRX
-}
-
-
-# -- Bibliography tools -------------------------------------------------------
-
-# Get bibtex citation from DOI (grabs bibtex citation from crossref.org)
-# src: (Connor McDaniel) https://youtu.be/nO4T8JDNYG0
-# Usage: doi2bib <doi>
-function doi2bib() {
-  bibdir="${2:-.}"
-  bibpath="${bibdir}/bib.bib"
-  curl --silent "https://api.crossref.org/works/$1/transform/application/x-bibtex"
-}
-
-# Grabs DOI from a pdf file
-# brew install pdftools/poppler
-# src: (Connor McDaniel) https://youtu.be/nO4T8JDNYG0
-# Usage: getdoi /path/to/pdf/file
-function getdoi() {
-  pdftotext -q "$1" - | grep -P -i "doi(:|.org)"
-}
-
-# Get bibtex citation using pubmed id
-# src: (Connor McDaniel) https://youtu.be/nO4T8JDNYG0
-# brew install bibutils
-# Usage: pmid2bib <pmid)
-function pmid2bib() {
-  curl -s "https://www.ncbi.nlm.nih.gov/pubmed/$1?report=xml&format=raw" \
-  | sed -e 's/&gt;/>/g' -e 's/&lt;/</g' | med2xml | xml2bib -nb -b
-}
-
-# Formats the bib files
-# brew install biber
-# src: ? (tex.stachexchange)
-# Usage: bibfmt <citation.bib>
-function bibfmt() {
-  biber --quiet --tool --output_align --output_indent=2 --output_fieldcase=lower "$1" --output-file "$1"
-  \rm "$1".blg
-}
-
-
-# -- VIM stuff ----------------------------------------------------------------
-
-# Vim Query (if arg provided, shows a list of all files with that query string)
-# Usage: vq [query]
-function vq() {
-  file="$(find . -type f | fzf --reverse --multi --query $1)"
-  test -n "$file" && nvim $_
-}
-
-
-# -- Misc. --------------------------------------------------------------------
-
-# List fonts
-# Usage: lsfont
-lsfont() {
-  fc-list | fzf --reverse --multi --delimiter ':' --with-nth='-2..-1'
-}
-
-# Man pages
-# Usage: m (A-m)
-m() {
-  man `fzf < ~/.manpages`
-}
-bindkey -s '\em' 'm\r'
-
-# Read man pages in pdf files
-# Usage: manpdf
-manpdf() {
-  man -t `fzf < ~/.manpages` | ps2pdf - - | open -fa Skim
-}
-
-# Get python .gitignore
-# Usage: pygitignore
-pygitignore() {
-  download=0
-  if [ -e .gitignore ]; then
-      echo ".gitignore already exists."
-  else
-      curl -s https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore > .gitignore
-  fi
-}
-
-# Reset shell
-# Also fixes the change of cursor via reset
-# Usage: reset
-reset() {
-  echo -ne '\e[2 q' && command reset
-}
-
-# Play (only audio of) media files in cli (using mpv)
-# Usage: play <file>
-play() {
-  mpv --no-config --really-quiet --keep-open=no --force-window=no --no-resume-playback "$1"
-}
-
 # Source/load virtual env (nemonics: Virtualenv ACTivate)
-# Usage: vact /path/to/venv/dir/
+# Usage: vact /path/to/venvdir/
+#        vact /path/to/basedir (basedir contains either .venv/ or venv/)
 vact() {
   [ $# -gt 1 ] && printf "Wrong number of arguments\n" && return 1
+
+  _enable() { [ -e "$1" ] && source "$1" || echo "No file $1."; }
 
   if [ $# -eq 0 ]; then
     if [ -d "$PWD/venv" ]; then
@@ -273,15 +148,15 @@ vact() {
 
   local VIRTUALENV_DATA_DIR="${XDG_DATA_HOME=$HOME/.local/share}/python"
 
-  local venv="$1"
-  if [ -d "$venv" ]; then
-    source "$venv"/bin/activate
+  local basedir="$1"
+  if [ -d "${basedir}/.venv" ]; then
+    _enable "${basedir}/.venv/bin/activate"
+  elif [ -d "${basedir}/venv" ]; then
+    _enable "${basedir}/venv/bin/activate"
+  elif [ -d "${VIRTUALENV_DATA_DIR}/${basedir}" ]; then
+    _enable "${VIRTUALENV_DATA_DIR}/${basedir}/bin/activate"
   else
-    if [ -d "$VIRTUALENV_DATA_DIR"/"$venv" ]; then
-      source "$VIRTUALENV_DATA_DIR"/"$venv"/bin/activate
-    else
-      echo "Error: No such environment as: $venv"
-    fi
+    _enable "$basedir/bin/activate"
   fi
 }
 
@@ -296,11 +171,6 @@ function cdjob () {
 
 # Create a directory and take me into it
 # Usage: take <dir>
-
-# function take() {
-#   mkdir -p "$@" && cd "${@:$#}"
-# }
-
 function take() {
   local changeDir=1
 
@@ -338,35 +208,6 @@ function take() {
   fi
 }
 
-# Search for projects
-# Usage: proj (Alt-p)
-function proj() {
-  cd "$(find $HOME/code/projects $HOME/code/software -maxdepth 1 -type d | fzf)"
-}
-bindkey -s '\ep' 'proj\r'
-
-# # Find pdf files
-# # Usage: fpdf
-# function fpdf() {
-#   pdf="$(find \
-#     $HOME/Documents $HOME/books $HOME/archived/uni/ \
-#     -type f -iname '*.pdf' 2>/dev/null \
-#   | fzf --delimiter '/' --with-nth='-1')"
-#   test -n "${pdf}" && open "${pdf}"
-# }
-
-
-# Find pdf files
-# Usage: fpdf
-function fpdf() {
-  pdf="$(find \
-    ~/Documents/books ~/Documents/sci $fpdf_dirs \
-    -mindepth 1 -maxdepth 1 -type f -iname '*.pdf' 2>/dev/null \
-  | fzf --delimiter '/' --with-nth='-1')"
-  test -n "${pdf}" && open "${pdf}"
-}
-
-
 # Archive Extraction
 # src: Derek Taylor
 # Usage: ex <file>
@@ -401,25 +242,6 @@ function history() {
   fc -l 1
 }
 
-# Print a pruned version of a tree.
-#
-# Examples:
-#
-#   # Print all "*.js" files in src:
-#   subtree '*.js' src
-#
-#   # Print all "*.js" files in the current directory:
-#   subtree '*.js'
-#
-#   # Print all "*.js" and "*.ts" files in current directory:
-#   subtree '*.js|*.ts'
-#
-# src: gh/wincent/wincent
-# (https://github.com/wincent/wincent/blob/master/aspects/dotfiles/files/.zsh/functions)
-function subtree() {
-  tree -a --prune -P "$@"
-}
-
 # fd - "find directory"
 # src: gh/wincent/wincent
 # Inspired by: https://github.com/junegunn/fzf/wiki/examples#changing-directory
@@ -438,16 +260,8 @@ function fd() {
     --prompt "> ") \
   && cd "$DIR"
 }
-bindkey -s '' 'fd\r'
+# bindkey -s '' 'fd\r'
 
-
-# fh - "find [in] history"
-# src: gh/wincent/wincent
-# Inspired by: https://github.com/junegunn/fzf/wiki/examples#command-history
-# Usage: fh
-function fh() {
-  print -z $(fc -l 1 | fzf --no-multi --tac --no-sort -q "$*" --prompt "> " | sed 's/ *[0-9]*\*\{0,1\} *//')
-}
 
 # Efficient scratch space
 # src: gh/wincent/wincent
@@ -461,154 +275,6 @@ function scratch() {
   rm -rf "$SCRATCH"
 }
 
-
-# -- OpenFOAM -----------------------------------------------------------------
-
-function tuts() {
-  [ -z $FOAM_TUTORIALS ] && {
-    echo "OpenFOAM environment is not loaded."
-    return 1
-  }
-  find $FOAM_TUTORIALS/* -maxdepth 3 -mindepth 2 -type d  \
-  | fzf                                                   \
-    --preview='test -n {} && tree --gitignore -L 2 -C {}' \
-    --preview-window=right:70%:border-double              \
-    --delimiter '/' --with-nth 7..9
-}
-
-function cdtut() {
-  local tut="$(tuts)"
-  cd "$tut"
-}
-
-# # Take a Peek at an OpenFOAM Library/Application
-# #
-# # Usage: `foampeek [lib/app name query] [file name query]`
-# #
-# # Firstly, it prompts you to select a library (in `$FOAM_SRC`) or an application
-# # (in `$FOAM_APP`), and finally, it lists all the files in that lib/app for you
-# # to select.
-# #
-# # Two optional arguments can be passed as query for:
-# # 1. name of the lib/app
-# # 2. name of the file in that lib/app
-# #
-# # You can select more than one file to view in the editor (See the
-# # key bindings bellow).
-# #
-# # By default, it will look for the `EDITOR` environment
-# # variable. You can set this environment variable in your shell config (either
-# # in `.profile`, `.bash_profile`, `.zprofile`, `.bashrc`, or `.zshrc`) to your
-# # favroite editor.
-# #
-# # Bindings:
-# # - Tab: select the current item
-# # - Shift-Tab: de-select the current item
-# # - C-A: select all
-# # - C-D: de-select all
-# # - C-T: toggle selecting/de-selecting all
-# #
-# # Examples:
-# # 1. `$ foampeek`
-# # 2. `$ foampeek icof createfie`
-# # 2. `$ foampeek lagrang spheredrag `
-# # 2. `$ foampeek 'lagrang intermed' spheredrag `
-# # 3. `$ foampeek meshtofoam`
-# #
-# # TODO:
-# # 1. -I: add custom project directories
-# # 2. -U|--user: also search in user directory as well (will search for src and application in user dir)
-# # 3. config file?
-# # 4. cache result of find command for list of all files in a database like file and add daily item to cronjob to update
-# function foampeek() {
-#   test -z $WM_PROJECT_DIR && { echo "OpenFOAM env is not loaded." && return 1 ;}
-#
-#   # Parse arguments
-#   while [ $# -gt 0 ]; do
-#     case $1 in
-#       -l | --lib)
-#         shift
-#         lib_name="$1"
-#         ;;
-#       -a | --app)
-#         shift
-#         app_name="$1"
-#         ;;
-#       *)
-#         if [ $# -gt 2 ]; then
-#           printf "%s%s%s\n" "Wrong number of arguments. " \
-#                           "Two extra optional args was needed, " \
-#                           "but $(($# - 2)) extra args are provided."
-#           return 1
-#         fi
-#         lib_name="$1"
-#         app_name="$2"
-#         break
-#         ;;
-#     esac
-#   done
-#
-#   # Select the library or application
-#   # Any directory that has a `Make` folder in it counts.
-#   # src: path to the library/application
-#   dir=$(                                                       \
-#       find $FOAM_SRC $FOAM_APP -path "*Make"                   \
-#       | sed -e 's#Make$##'                                     \
-#       | sk --query "$1"                                        \
-#           --delimiter '/' --with-nth '6..'                     \
-#           --preview 'tree --gitignore -I lnInclude -L 2 -C {}' \
-#           --preview-window 'up:70%:border')
-#
-#   # In case user cancels operations at this point by pressing Escape
-#   test -z $dir && return 0
-#
-#
-#   # Select file or files in the selected code.
-#   #
-#   # To get LSP (clangd) detecting the project setup, I need to cd into the
-#   # `$dir`'s directory. Thus, a subshell is spawned to preserve the old working
-#   # directory.
-#   ( cd $dir
-#
-#     # --delimiter '/' --with-nth='6..'
-#     #  /home/user/OpenFOAM/OpenFOAM-x/src/...
-#     #  12    3    4        5          6   7
-#     files=$( \
-#         find $dir -type f -not \( \
-#             -path "*.cache*" -o \
-#             -path "*.json*" -o \
-#             -path "*.vscode*" -o \
-#             -path "*.git*" -o \
-#             -path "*$WM_OPTIONS" \
-#           \) \
-#       | sk --multi --query "$2"                                            \
-#           --delimiter '/' --with-nth='6..' --nth='-1'                      \
-#           --bind 'ctrl-a:select-all,ctrl-d:deselect-all,ctrl-t:toggle-all' \
-#           --preview 'test -n {} && nl -ba {}' --preview-window 'up:75%'    \
-#           --header='CTRL-A: select all; CTRL-D: de-select-all; CTRL-T: toggle')
-#
-#     # Edit in the Editor
-#     test -z $files || {
-#       case $EDITOR in
-#         vim | nvim)
-#           opts='-R'  # Read-Only mode
-#           ;;
-#         *)
-#           # "TODO: Other editor configs"
-#           opts=""
-#           ;;
-#       esac
-#
-#       $EDITOR $opts $files
-#     }
-#   )
-# }
-
-
-
-# emacs() {
-#     open -a Emacs.app "$@"
-# }
 
 # Then use y instead of yazi to start, and press q to quit, you'll see the CWD changed. Sometimes,
 # you don't want to change, press Q to quit.
@@ -626,57 +292,50 @@ killemacs () {
   ps aux | grep -v grep | grep Emacs.app | awk '{print $2}' | gxargs -r kill -9
 }
 
-function vpninfo() {
-  http_proxy=http://127.0.0.1:8081 curl --silent ipinfo.io/"$(curl -s ifconfig.me)"
-  printf "\n"
-}
 
-# Random hisotry event for today from Wikipedia
-update_wikidates () {
-  [ -d ~/.wikidates ] || mkdir ~/.wikidates
-  for day in {1..365}; do
-    date=$(LC_ALL=en_US.utf8 date -d "now +$day days" +%B_%d)
-    echo $day/365: $date
-
-    w3m -dump "http://en.wikipedia.org/wiki/$date" \
-      | awk '/^Events$/,/^Births$/' \
-      | tail -n +3 | head -n -2 \
-      | sed -E \
-            -e "/\[edit\]$/d" \
-            -e "/^[[:space:]]*[0-9]{4}[–-][0-9]{4}[[:space:]]*$/d" \
-            -e "/^[[:space:]]*[0-9]{4}[–-][a-zA-Z]+[[:space:]]*$/d" \
-            -e "/^[[:space:]]*[Pp]re-[0-9]{4}[[:space:]]*$/d" \
-      | tr -d '\n' \
-      | sed -E -e "s/^[ \t]*//" -e "s/[[:space:]][[:space:]]+/ /g" \
-      | sed "s/•/\n•/g" \
-      | sed -E -e "s/[[:space:]]+$//" \
-      | sed -E 's/\^\[[0-9][0-9]?[0-9]?\]//g' \
-      | tail -n +2 \
-      > ~/.wikidates/$date
-    printf "\n" >> ~/.wikidates/$date
-  done
-
-  echo $day/366: February_29
-  w3m -dump "http://en.wikipedia.org/wiki/February_29" \
-    | awk '/^Events$/,/^Births$/' \
-    | tail -n +3 | head -n -2 \
-    | sed -E \
-          -e "/\[edit\]$/d" \
-          -e "/^[[:space:]]*[0-9]{4}[–-][0-9]{4}[[:space:]]*$/d" \
-          -e "/^[[:space:]]*[0-9]{4}[–-][a-zA-Z]+[[:space:]]*$/d" \
-          -e "/^[[:space:]]*[Pp]re-[0-9]{4}[[:space:]]*$/d" \
-    | tr -d '\n' \
-    | sed -E -e "s/^[ \t]*//" -e "s/[[:space:]][[:space:]]+/ /g" \
-    | sed "s/•/\n•/g" \
-    | sed -E -e "s/[[:space:]]+$//" \
-    | sed -E 's/\^\[[0-9][0-9]?[0-9]?\]//g' \
-    | tail -n +2 \
-    > ~/.wikidates/February_29
-  printf "\n" >> ~/.wikidates/February_29
-}
-
-# cat ~/.wikidates/$(LC_ALL=en_US.utf8 date +%B_%d) | shuf -n 1
-
+# # Random hisotry event for today from Wikipedia
+# update_wikidates () {
+#   [ -d ~/.wikidates ] || mkdir ~/.wikidates
+#   for day in {1..365}; do
+#     date=$(LC_ALL=en_US.utf8 date -d "now +$day days" +%B_%d)
+#     echo $day/365: $date
+#
+#     w3m -dump "http://en.wikipedia.org/wiki/$date" \
+#       | awk '/^Events$/,/^Births$/' \
+#       | tail -n +3 | head -n -2 \
+#       | sed -E \
+#             -e "/\[edit\]$/d" \
+#             -e "/^[[:space:]]*[0-9]{4}[–-][0-9]{4}[[:space:]]*$/d" \
+#             -e "/^[[:space:]]*[0-9]{4}[–-][a-zA-Z]+[[:space:]]*$/d" \
+#             -e "/^[[:space:]]*[Pp]re-[0-9]{4}[[:space:]]*$/d" \
+#       | tr -d '\n' \
+#       | sed -E -e "s/^[ \t]*//" -e "s/[[:space:]][[:space:]]+/ /g" \
+#       | sed "s/•/\n•/g" \
+#       | sed -E -e "s/[[:space:]]+$//" \
+#       | sed -E 's/\^\[[0-9][0-9]?[0-9]?\]//g' \
+#       | tail -n +2 \
+#       > ~/.wikidates/$date
+#     printf "\n" >> ~/.wikidates/$date
+#   done
+#
+#   echo $day/366: February_29
+#   w3m -dump "http://en.wikipedia.org/wiki/February_29" \
+#     | awk '/^Events$/,/^Births$/' \
+#     | tail -n +3 | head -n -2 \
+#     | sed -E \
+#           -e "/\[edit\]$/d" \
+#           -e "/^[[:space:]]*[0-9]{4}[–-][0-9]{4}[[:space:]]*$/d" \
+#           -e "/^[[:space:]]*[0-9]{4}[–-][a-zA-Z]+[[:space:]]*$/d" \
+#           -e "/^[[:space:]]*[Pp]re-[0-9]{4}[[:space:]]*$/d" \
+#     | tr -d '\n' \
+#     | sed -E -e "s/^[ \t]*//" -e "s/[[:space:]][[:space:]]+/ /g" \
+#     | sed "s/•/\n•/g" \
+#     | sed -E -e "s/[[:space:]]+$//" \
+#     | sed -E 's/\^\[[0-9][0-9]?[0-9]?\]//g' \
+#     | tail -n +2 \
+#     > ~/.wikidates/February_29
+#   printf "\n" >> ~/.wikidates/February_29
+# }
 
 # Fix the problem with the conflict between gnu-parallell and moreutils
 __fix_parallel_moreutil_conflict() {
@@ -687,196 +346,42 @@ __fix_parallel_moreutil_conflict() {
   brew link --overwrite parallel
 }
 
-vhich(){
-  $EDITOR "`which $1`"
-}
-
-
-td() {
-  awk '/^----/ {c++} c==1 && /^\+/' ~/..plann
-}
-
-
-mpich() {
-    local mpich_prefix="$HOME/opt/mpich/mpich-4.3.0"
-    export PATH="$mpich_prefix/bin:$PATH"
-    export MANPATH="$mpich_prefix/share/man/:$MANPATH"
-    export DYLD_LIBRARY_PATH="$HOME/.local/lib:$DYLD_LIBRARY_PATH"
-    export CC="mpicc"
-    export CXX="mpic++"
-    export LDLIBS="-lmpi $LDLIBS"
-    export LDFLAGS="-L$mpich_prefix/lib $LDFLAGS"
-    export CFLAGS="-I$mpich_prefix/include -Wall -Wextra $CFLAGS"
-    export CXXFLAGS="-I$mpich_prefix/include -Wall -Wextra $CXXFLAGS"
-    printf "Enabled mpich-4.3.0 from %s\n" $mpich_prefix
-}
-
-
-
-# function ytdl() {
-#   local archive_file="yt-dlp_playlist_archive.txt"
-#   local opts='--cookies ~/.yt-dlp-yt-cookies.txt --no-warning --ignore-errors --embed-metadata --continue --retries inf --retry-sleep 5 --sleep-interval 3'
-#   # --proxy socks5://127.0.0.1:9050/ \
-#   local opts_quality="-f bestvideo[height<=?720]+bestaudio/best"
-#
-#   for arg in "$@"
-#   do
-#     # Remove arg
-#     shift
-#
-#     case "$arg" in
-#       -pl|-playlist)
-#         opts="$opts -o '%(playlist_index)s-%(title)s-%(id)s.%(ext)s' --yes-playlist"
-#         continue
-#         ;;
-#       -480p)
-#         opts_quality="-f 'bestvideo[height<=?480]+bestaudio/best'"
-#         continue
-#         ;;
-#       -1080p)
-#         opts_quality="-f 'bestvideo[height<=?1080]+bestaudio/best'"
-#         continue
-#         ;;
-#       -sony)
-#         opts_quality="-f 'bestvideo[ext=mp4][height<=?720]+bestaudio[ext=mp3]/best[ext=mp4]/best'"
-#         continue
-#         ;;
-#       -sub|-subtitle)
-#         opts="$opts --skip-download --write-sub --write-auto-subs --sub-lang 'en'"
-#         continue
-#         ;;
-#       -embed)
-#         opts="$opts --embed-subs --embed-thumbnail --embed-metadata --embed-chapters"
-#         continue
-#         ;;
-#       -srt)
-#         opts="$opts --skip-download --write-sub --write-auto-subs --sub-lang 'en' --convert-subs=srt"
-#         continue
-#         ;;
-#       -audio|-au|-music|-mu)
-#         opts="$opts --extract-audio"
-#         # 
-#         opts_quality="-f 'bestaudio/best'"
-#         continue
-#         ;;
-#       -ar|-archive)
-#         opts="$opts --download-archive $archive_file"
-#         continue
-#         ;;
-#     esac
-#
-#     # Re-insert arg
-#     set -- "$@" $arg
-#   done
-#
-#   echo
-#   echo yt-dlp `printf '%s %s' $opts $opts_quality` "$@"
-#   echo
-#   yt-dlp $opts $opts_quality
-#
+# mpich() {
+#     local mpich_prefix="$HOME/opt/mpich/mpich-4.3.0"
+#     export PATH="$mpich_prefix/bin:$PATH"
+#     export MANPATH="$mpich_prefix/share/man/:$MANPATH"
+#     export DYLD_LIBRARY_PATH="$HOME/.local/lib:$DYLD_LIBRARY_PATH"
+#     export CC="mpicc"
+#     export CXX="mpic++"
+#     export LDLIBS="-lmpi $LDLIBS"
+#     export LDFLAGS="-L$mpich_prefix/lib $LDFLAGS"
+#     export CFLAGS="-I$mpich_prefix/include -Wall -Wextra $CFLAGS"
+#     export CXXFLAGS="-I$mpich_prefix/include -Wall -Wextra $CXXFLAGS"
+#     printf "Enabled mpich-4.3.0 from %s\n" $mpich_prefix
 # }
 
 
-function ytdl() {
-  local archive_file="yt-dlp_playlist_archive.txt"
-
-  local opts=(
-    --cookies ~/.yt-dlp-yt-cookies.txt
-    --no-warning
-    --ignore-errors
-    --embed-metadata
-    --continue
-    --retries inf
-    --retry-sleep 5
-    --sleep-interval 3
-  )
-
-  local opts_quality=(-f 'bestvideo[height<=?720]+bestaudio/best')
-  local positional_args=()
-
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      -pl|-playlist)
-        opts+=(
-          -o '%(playlist_index)s-%(title)s-%(id)s.%(ext)s'
-          --yes-playlist
-        )
-        ;;
-      -480p)
-        opts_quality=(-f 'bestvideo[height<=?480]+bestaudio/best')
-        ;;
-      -1080p)
-        opts_quality=(-f 'bestvideo[height<=?1080]+bestaudio/best')
-        ;;
-      -sony)
-        opts_quality=(-f 'bestvideo[ext=mp4][height<=?720]+bestaudio[ext=mp3]/best[ext=mp4]/best')
-        ;;
-      -sub|-subtitle)
-        opts+=(
-          --skip-download
-          --write-sub
-          --write-auto-subs
-          --sub-lang en
-        )
-        ;;
-      -embed)
-        opts+=(
-          --embed-subs
-          --embed-thumbnail
-          --embed-metadata
-          --embed-chapters
-        )
-        ;;
-      -srt)
-        opts+=(
-          --skip-download
-          --write-sub
-          --write-auto-subs
-          --sub-lang en
-          --convert-subs srt
-        )
-        ;;
-      -audio|-au|-music|-mu)
-        opts+=(
-          --extract-audio
-          --audio-format opus
-          --audio-quality 0
-        )
-        opts_quality=(-f 'bestaudio/best')
-        ;;
-      -ar|-archive)
-        opts+=("--download-archive" "$archive_file")
-        ;;
-      *)
-        positional_args+=("$1")
-        ;;
-    esac
-    shift
-  done
-
-  echo
-  echo yt-dlp "${opts[@]}" "${opts_quality[@]}" "${positional_args[@]}"
-  echo
-  yt-dlp "${opts[@]}" "${opts_quality[@]}" "${positional_args[@]}"
+# LLVM
+llvm_load() {
+    export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+    export CC="/opt/homebrew/opt/llvm/bin/clang"
+    export CXX="/opt/homebrew/opt/llvm/bin/clang++"
+    export LDFLAGS="$LDFLAGS -L/opt/homebrew/opt/llvm/lib"
+    export CPPFLAGS="$CPPFLAGS -I/opt/homebrew/opt/llvm/include -Wall -Wextra"
+    export CFLAGS="$CFLAGS -I/opt/homebrew/opt/llvm/include -Wall -Wextra"
 }
 
-# Enable completion if using zsh
-compdef _ytdl yt-dlp
-compdef _ytdl yt-dlp
+# Fix librewolf
+function fix_librewolf {
+  xattr -d com.apple.quarantine /Applications/LibreWolf.app
+  tccutil reset ScreenCapture org.mozilla.librewolf
+}
 
-# # yt-dlp
-# # alias ytdl="yt-dlp --cookies-from-browser brave \
-# alias ytdl="yt-dlp --sleep-interval 3 --cookies ~/.yt-dlp-yt-cookies.txt --no-warning --add-metadata -ci --retries inf --retry-sleep 5 -f 'bestvideo[height<=?720]+bestaudio/best'"
-# compdef ytdl=yt-dlp
-#
-# alias ytdlpl="ytdl -o '%(playlist_index)s-%(title)s-%(id)s.%(ext)s' --yes-playlist --download-archive archive.txt"
-# _ytdlpl() { setopt ALIASES; _yt-dlp "$@"; }; compdef _ytdlpl ytdlpl
-#
-# alias ytdlpl480p="ytdl480p -o '%(playlist_index)s-%(title)s-%(id)s.%(ext)s' --yes-playlist \
-#               --download-archive archive.txt"
-#
-# alias yta="yt-dlp --cookies ~/.yt-dlp-yt-cookies.txt --add-metadata -ci -x "
-# alias ytdlsub='ytdl --skip-download --write-sub --write-auto-subs --sub-lang "en" \
-#                --convert-subs=srt'
-# alias ytdlplsub='--yes-playlist --skip-download --write-sub --write-auto-subs --sub-lang "en" --convert-subs=srt'
-# # to embed sub: --embed-subs --sub-langs "en.*"
+
+# Emacs
+
+alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+
+# ec="emacsclient --no-wait"
+# edit="emacsclient --alternate-editor='' -nc -F \"'(fullscreen . maximized)\""
+

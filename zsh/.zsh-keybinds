@@ -14,21 +14,22 @@ bindkey -M menuselect 'down'  vi-up-line-or-history
 bindkey -M menuselect 'up'    vi-forward-char
 bindkey -M menuselect 'right' vi-down-line-or-history
 
-precmd() { echo -ne '\e[2 q' ;}
-function zle-keymap-select () {
- case $KEYMAP in
-     vicmd) echo -ne '\e[2 q';;      # block
-     viins|main) echo -ne '\e[6 q';; # beam
- esac
-}
-zle -N zle-keymap-select
-zle-line-init() {
- zle -K viins
- echo -ne "\e[6 q"
-}
-zle -N zle-line-init
-echo -ne '\e[6 q'
-precmd() { echo -ne '\e[6 q' ;}
+# # Cursor shape
+# precmd() { echo -ne '\e[2 q' ;}
+# function zle-keymap-select () {
+#  case $KEYMAP in
+#      vicmd) echo -ne '\e[2 q';;      # block
+#      viins|main) echo -ne '\e[6 q';; # beam
+#  esac
+# }
+# zle -N zle-keymap-select
+# zle-line-init() {
+#  zle -K viins
+#  echo -ne "\e[6 q"
+# }
+# zle -N zle-line-init
+# echo -ne '\e[6 q'
+# precmd() { echo -ne '\e[6 q' ;}
 
 # ci", ci', ci`, di", etc
 autoload -U select-quoted
@@ -79,7 +80,6 @@ bindkey '\e.' 'insert-last-word'
 bindkey "^A" beginning-of-line
 bindkey "^E" end-of-line
 bindkey "^W" backward-kill-word
-bindkey '^U' kill-whole-line
 bindkey "^K" kill-line
 bindkey "^B" backward-char
 bindkey "^F" forward-char
@@ -93,8 +93,11 @@ bindkey '\ef' forward-word
 bindkey '\eb' backward-word
 bindkey '\ed' kill-word
 bindkey '^D' delete-char-or-list
+bindkey "^T" transpose-chars
+bindkey "\et" transpose-words
 
 bindkey "^?" backward-delete-char
+bindkey "^U" backward-kill-line
 
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
