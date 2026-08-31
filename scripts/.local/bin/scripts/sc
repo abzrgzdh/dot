@@ -1,0 +1,41 @@
+#!/bin/bash
+set -Eeuo pipefail
+
+AMPLIFY_DB="${AMPLIFY_DB:-9}"
+OUTPUT="${1:-$HOME/Desktop/screencast-$(date +%Y%m%d-%H%M%S).mp4}"
+DURATION="${2:-0}"
+
+tmpdir="$(mktemp -d)"
+raw="$tmpdir/raw.mov"
+
+cleanup() {
+    rm -rf "$tmpdir"
+}
+trap cleanup EXIT
+
+echo "Recording screen and microphone..."
+echo "Output: $OUTPUT"
+echo "Audio amplification: ${AMPLIFY_DB} dB"
+
+if [[ "$DURATION" -gt 0 ]]; then
+    screencapture -v -g -V "$DURATION" "$raw"
+else
+    echo "Press Ctrl-C to stop recording."
+    screencapture -v -g "$raw"
+fi
+
+echo "Amplifying audio and writing final video..."
+
+ffmpeg -hide_banner -y \
+    -i "$raw" \
+    -map 0:v:0 \
+    -map 0:a:0 \
+    -c:v copy \
+    -af "adeclick=threshold=1.5:burst=2,volume=${AMPLIFY_DB}dB" \
+    -c:a aac \
+    -b:a 160k \
+    -movflags +faststart \
+    "$OUTPUT"
+
+
+echo "Finished: $OUTPUT"
