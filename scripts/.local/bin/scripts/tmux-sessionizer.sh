@@ -1,1 +1,0 @@
-/Volumes/code/projects/tmux-sessionizer/tmux-sessionizer
