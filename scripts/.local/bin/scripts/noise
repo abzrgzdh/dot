@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+# case $1 in
+#     on)
+#         echo "enabling noise"
+#         defaults write com.apple.ComfortSounds comfortSoundsEnabled -bool YES
+#         defaults write com.apple.ComfortSounds lastEnablementTimestamp $(date +%s)
+#         launchctl kill SIGHUP gui/$(id -u)/com.apple.accessibility.heard
+#         ;;
+#     off)
+#         echo "disabling noise"
+#         defaults write com.apple.ComfortSounds comfortSoundsEnabled -bool NO
+#         launchctl kill SIGHUP gui/$(id -u)/com.apple.accessibility.heard
+#         ;;
+#     *)
+#         echo "invalid input. usage: noise (on|off)"
+# esac
+
+# rain, background sounds: https://apple.stackexchange.com/a/461987
+function noiseOn(){ defaults write com.apple.ComfortSounds comfortSoundsEnabled -bool YES; killall heard; defaults write com.apple.ComfortSounds lastEnablementTimestamp $(date +%s); launchctl kill SIGHUP gui/$(id -u)/com.apple.accessibility.heard; }
+function noiseOff(){ defaults write com.apple.ComfortSounds comfortSoundsEnabled -bool NO; killall heard; launchctl kill SIGHUP gui/$(id -u)/com.apple.accessibility.heard; }
+function noise(){ if [[ $(defaults read com.apple.ComfortSounds comfortSoundsEnabled) -eq 0 ]]; then noiseOn; else noiseOff; fi;  }
+
+noise
