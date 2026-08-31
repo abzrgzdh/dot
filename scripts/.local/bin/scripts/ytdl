@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+cookie_file="$HOME/.yt-dlp-yt-cookies.txt"
+archive_file="yt-dlp_archive.txt"
+
+opts=(
+  --cookies ~/.yt-dlp-yt-cookies.txt
+  --js-runtime node
+  --remote-components ejs:github
+  # --no-warning
+  # --ignore-errors
+  # --embed-metadata
+  --continue
+  # --retries inf
+)
+
+# in case testing errors of video formats (-f) persists, use:
+# bv[height<=720]+ba/b[height<=720]
+opts_quality=(-f 'bestvideo[height<=?720]+bestaudio/best')
+# opts_quality=(-f 'bv[height<=720]+ba/b[height<=720]')
+positional_args=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -uc|-update-cookie)
+      printf "Updating the cookies from clipboard..."
+      if pbpaste | grep -q "Netscape"; then
+        pbpaste -Prefer txt > "$cookie_file"
+      else
+        printf "Invalid cookie in clipboard\n"
+        exit 1
+      fi
+      printf "Done.\n"
+      ;;
+    -pl|-playlist)
+      opts+=(
+        -o '%(playlist_index)s-%(title)s-%(id)s.%(ext)s'
+        --yes-playlist
+      )
+      ;;
+    -240p)
+      opts_quality=(-f 'bestvideo[height<=?240]+bestaudio/best')
+      ;;
+    -360p)
+      opts_quality=(-f 'bestvideo[height<=?360]+bestaudio/best')
+      ;;
+    -480p)
+      opts_quality=(-f 'bestvideo[height<=?480]+bestaudio/best')
+      ;;
+    -720p)
+      opts_quality=(-f 'bestvideo[height<=?720]+bestaudio/best')
+      ;;
+    -1080p)
+      opts_quality=(-f 'bestvideo[height<=?1080]+bestaudio/best')
+      ;;
+    -sony)
+      opts_quality=(-f 'bestvideo[ext=mp4][height<=?720]+bestaudio[ext=mp3]/best[ext=mp4]/best')
+      ;;
+    -sub|-subtitle)
+      opts+=(
+        --skip-download
+        --write-sub
+        --write-auto-subs
+        --sub-lang en
+      )
+      ;;
+    -embed)
+      opts+=(
+        --embed-subs
+        --embed-thumbnail
+        --embed-metadata
+        --embed-chapters
+      )
+      ;;
+    -srt)
+      opts+=(
+        --skip-download
+        --write-sub
+        --write-auto-subs
+        --sub-lang en
+        --convert-subs srt
+      )
+      ;;
+    -audio|-au|-music|-mu)
+      opts+=(
+        --extract-audio
+        --audio-format opus
+        --audio-quality 0
+      )
+      opts_quality=(-f 'bestaudio/best')
+      ;;
+    -ar|-archive)
+      opts+=("--download-archive" "$archive_file")
+      ;;
+    *)
+      positional_args+=("$1")
+      ;;
+  esac
+  shift
+done
+
+debug() {
+  echo
+  echo yt-dlp "${opts[@]}" "${opts_quality[@]}" "${positional_args[@]}"
+  echo
+}
+
+(
+  set -x
+  yt-dlp "${opts[@]}" "${opts_quality[@]}" "${positional_args[@]}"
+)
+
+# # yt-dlp
+# # alias ytdl="yt-dlp --cookies-from-browser brave \
+# alias ytdl="yt-dlp --sleep-interval 3 --cookies ~/.yt-dlp-yt-cookies.txt --no-warning --add-metadata -ci --retries inf --retry-sleep 5 -f 'bestvideo[height<=?720]+bestaudio/best'"
+# compdef ytdl=yt-dlp
+#
+# alias ytdlpl="ytdl -o '%(playlist_index)s-%(title)s-%(id)s.%(ext)s' --yes-playlist --download-archive archive.txt"
+# _ytdlpl() { setopt ALIASES; _yt-dlp "$@"; }; compdef _ytdlpl ytdlpl
+#
+# alias ytdlpl480p="ytdl480p -o '%(playlist_index)s-%(title)s-%(id)s.%(ext)s' --yes-playlist \
+#               --download-archive archive.txt"
+#
+# alias yta="yt-dlp --cookies ~/.yt-dlp-yt-cookies.txt --add-metadata -ci -x "
+# alias ytdlsub='ytdl --skip-download --write-sub --write-auto-subs --sub-lang "en" \
+#                --convert-subs=srt'
+# alias ytdlplsub='--yes-playlist --skip-download --write-sub --write-auto-subs --sub-lang "en" --convert-subs=srt'
+# # to embed sub: --embed-subs --sub-langs "en.*"
