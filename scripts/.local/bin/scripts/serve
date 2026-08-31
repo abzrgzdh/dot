@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+# Usage: serve [--directory DIRECTORY] [PORT]
+#
+# Defaults to port 8000, current directory (ie. will use index.html if present).
+#
+# src: gh/wincent/wincent
+# (https://github.com/wincent/wincent/blob/master/aspects/dotfiles/files/.zsh/functions)
+
+python3 -m http.server "$@"
