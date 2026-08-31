@@ -17,3 +17,5 @@ eshell/
 .org-id-locations
 elisp-objects/
 .yas-compiled-snippets.el
+eln-cache/
+projects.eld
