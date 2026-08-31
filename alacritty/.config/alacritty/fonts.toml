@@ -1,10 +1,161 @@
 [font]
-size = 20.5
 
-# size = 20.5
-# normal = { family = "meslolgs nerd font mono", style = "Regular" }
-# bold = { family = "meslolgs nerd font mono", style = "Bold" }
-# bold_italic = { family = "meslolgs nerd font mono", style = "Bold Italic" }
-# italic = { family = "meslolgs nerd font mono", style = "Italic" }
+size=18.0
+normal = { family = "menlo nerd font", style = "Regular" }
+bold = { family = "menlo nerd font", style = "Bold" }
+bold_italic = { family = "menlo nerd font", style = "Bold Italic" }
+italic = { family = "menlo nerd font", style = "Italic" }
+# glyph_offset = { x = 0, y = 5 }
+# offset = { x = 0 , y = 10 }
+
+
+# size=17.0
+# normal = { family = "saucecodepro nerd font", style = "Regular" }
+# bold = { family = "saucecodepro nerd font", style = "Bold" }
+# bold_italic = { family = "saucecodepro nerd font", style = "Bold Italic" }
+# italic = { family = "saucecodepro nerd font", style = "Italic" }
+# # glyph_offset = { x = 0, y = 5 }
+# # offset = { x = 0 , y = 10 }
+
+
+# size=18.0
+# normal = { family = "jetbrainsmono nerd font", style = "Regular" }
+# bold = { family = "jetbrainsmono nerd font", style = "Bold" }
+# bold_italic = { family = "jetbrainsmono nerd font", style = "Bold Italic" }
+# italic = { family = "jetbrainsmono nerd font", style = "Italic" }
+# # offset = { x = 0 , y = -3 }
+
+
+# size=18.0
+# normal = { family = "hack nerd font", style = "Regular" }
+# bold = { family = "hack nerd font", style = "Bold" }
+# bold_italic = { family = "hack nerd font", style = "Bold Italic" }
+# italic = { family = "hack nerd font", style = "Italic" }
+
+
+# size=18.0
+# normal = { family = "literationmono nerd font", style = "Regular" }
+# bold = { family = "literationmono nerd font", style = "Bold" }
+# bold_italic = { family = "literationmono nerd font", style = "Bold Italic" }
+# italic = { family = "literationmono nerd font", style = "Italic" }
 # glyph_offset = { x = 0, y = -2 }
-# offset = { x = 0, y = -4 }
+# # offset = { x = -2 , y = -10 }
+
+
+# size=20.5
+# normal = { family = "noto sans mono", style = "Regular" }
+# bold = { family = "noto sans mono", style = "Bold" }
+# bold_italic = { family = "noto sans mono", style = "Bold Italic" }
+# italic = { family = "noto sans mono", style = "Italic" }
+# offset = { x = 0 , y = -5 }
+
+# size=20.0
+# normal = { family = "sf mono", style = "Regular" }
+# bold = { family = "sf mono", style = "Bold" }
+# bold_italic = { family = "sf mono", style = "Bold Italic" }
+# italic = { family = "sf mono", style = "Italic" }
+# # offset = { x = 0 , y = -5 }
+
+
+
+# size=19.0
+# normal = { family = "iosevka nerd font", style = "Regular" }
+# bold = { family = "iosevka nerd font", style = "Bold" }
+# bold_italic = { family = "iosevka nerd font", style = "Bold Italic" }
+# italic = { family = "iosevka nerd font", style = "Italic" }
+# # glyph_offset = { x = 1, y = -2 }
+# offset = { x = 1 , y = 0 }
+
+
+# size=18.5
+# normal = { family = "dejavusansm nerd font", style = "Regular" }
+# italic = { family = "dejavusansm nerd font", style = "Oblique" }
+# bold = { family = "dejavusansm nerd font", style = "Bold" }
+# bold_italic = { family = "dejavusansm nerd font", style = "Bold Oblique" }
+
+
+# size=19.0
+# normal = { family = "consolas nerd font", style = "Regular" }
+# bold = { family = "consolas nerd font", style = "Bold" }
+# bold_italic = { family = "consolas nerd font", style = "Bold Italic" }
+# italic = { family = "consolas nerd font", style = "Italic" }
+# # glyph_offset = { x = -1, y = -3 }
+# # offset = { x = 0 , y = -2 }
+
+
+# size=18.0
+# normal = { family = "lucida sans typewriter for powerline", style = "Regular" }
+# bold = { family = "lucida sans typewriter for powerline", style = "Bold" }
+# bold_italic = { family = "lucida sans typewriter for powerline", style = "Bold Italic" }
+# italic = { family = "lucida sans typewriter for powerline", style = "Italic" }
+# glyph_offset = { x = 0, y = +4 }
+# offset = { x = 0 , y = 8 }
+
+
+# size=18.0
+# normal = { family = "liga sfmono nerd font", style = "Regular" }
+# bold = { family = "liga sfmono nerd font", style = "Bold" }
+# bold_italic = { family = "liga sfmono nerd font", style = "Bold Italic" }
+# italic = { family = "liga sfmono nerd font", style = "Italic" }
+# # glyph_offset = { x = -1, y = -3 }
+# # offset = { x = -2 , y = -10 }
+
+# size=18.0
+# normal = { family = "firacode nerd font", style = "Regular" }
+# bold = { family = "firacode nerd font", style = "Bold" }
+# bold_italic = { family = "firacode nerd font", style = "Bold Italic" }
+# italic = { family = "firacode nerd font", style = "Italic" }
+# # glyph_offset = { x = -1, y = -3 }
+# # offset = { x = -2 , y = -10 }
+
+# size=20.7
+# normal = { family = "agave nerd font mono" }
+
+# size=18.0
+# normal = { family = "gomono nerd font" }
+# # glyph_offset = { x = 0, y = -0 }
+# offset = { x = 0 , y = 6 }
+
+# size=21.0
+# normal = { family = "inconsolata nerd font", style = "Regular" }
+# bold = { family = "inconsolata nerd font", style = "Bold" }
+
+# size=18.0
+# normal = { family = "caskaydiacove nerd font", style = "SemiLight" }
+# bold = { family = "caskaydiacove nerd font", style = "Bold" }
+# bold_italic = { family = "caskaydiacove nerd font", style = "Bold Italic" }
+# italic = { family = "caskaydiacove nerd font", style = "Italic" }
+
+# size=18.0
+# normal = { family = "input mono", style = "Regular" }
+# bold = { family = "input mono", style = "Bold" }
+# bold_italic = { family = "input mono", style = "Bold Italic" }
+# italic = { family = "input mono", style = "Italic" }
+
+# size=19.9
+# normal = { family = "courier", style = "Regular" }
+# bold = { family = "courier", style = "Bold" }
+# bold_italic = { family = "courier", style = "Bold Italic" }
+# italic = { family = "courier", style = "Italic" }
+
+# size=20.8
+# normal = { family = "ubuntumono nerd font", style = "Regular" }
+# bold = { family = "ubuntumono nerd font", style = "Bold" }
+# bold_italic = { family = "ubuntumono nerd font", style = "Bold Italic" }
+# italic = { family = "ubuntumono nerd font", style = "Italic" }
+# glyph_offset = { x = 0, y = +3 }
+# offset = { x = 0 , y = 6 }
+
+# size=19.5
+# normal = { family = "Andale mono", style = "Regular" }
+
+# size=18.5
+# normal = { family = "pt mono", style = "Regular" }
+
+# size=17.3
+# normal = { family = "monaco nerd font", style = "Regular" }
+# bold = { family = "monaco nerd font", style = "Bold" }
+# bold_italic = { family = "monaco nerd font", style = "Bold Italic" }
+# italic = { family = "monaco nerd font", style = "Italic" }
+# # glyph_offset = { x = 0, y = 2 }
+# offset = { x = 0 , y = 2 }

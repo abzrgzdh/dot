@@ -105,4 +105,10 @@ bindings = [
     { chars = "\u001BO", key = "o", mods = "Command|Shift" },
     # Tmux toggle last session
     { chars = "\u001BO", key = "o", mods = "Command|Shift" },
+
+    # Ctrl+6 (vim's alternate buffer keymap)
+    { chars = "\u001e", key = "6", mods = "Control" },
+
+    # Ctrl+/ == ^_
+    { chars = "\u001f", key = "Slash", mods = "Control" },
 ]
