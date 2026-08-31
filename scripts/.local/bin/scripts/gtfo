@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+query=""
+filename=""
+
 # This is the modified version of gtfo from https://www.cfdengine.com/newsletter/173/
 
 main() {
@@ -7,32 +10,37 @@ main() {
 
   if [ -z "$WM_PROJECT_DIR" ]
   then
-    die "OpenFOAM environment is not loaded."
+    die "OpenFOAM environment is not loaded. "
   fi
 
   if [ -n "$filename" ]; then
     find_nameOpt="-iname"
   fi
 
+  # used to capture the output of the fzf
+  # outpath=`mktemp`
+  touch "$HOME/gtfo_tmp_file"
+  outpath="$HOME/gtfo_tmp_file"
+  trap 'rm -f "$outpath"' EXIT INT TERM
+
   find $FOAM_TUTORIALS $find_nameOpt "$filename" -type f \
-    -not \(                                     \
-          -path "*polyMesh*" -prune \
-          -o -path '*triSurface*' -prune \
-          -o -path '*geometry*' -prune \
-          -o -path "*dataset*" -prune \
-          -o -path '*validation*' -prune \
-          -o -path "*All*" \
-          -o -path '*.sh' \
-          -o -path "*.py" \
-          -o -path '*README*' \
-          -o -path '*.m4*' \
-          -o -path "*plot*" \
-          -o -path "*list-worlds*" \
-          -o -path "*.schema" \
-          -o -path "*.csv" \
-          -o -path '*otape17*' \
-          -o -path "*Test*" \
-        \) \
+    -not \( \
+    -path "*polyMesh*" -prune \
+    -o -path '*triSurface*' -prune \
+    -o -path '*geometry*' -prune \
+    -o -path "*dataset*" -prune \
+    -o -path '*validation*' -prune \
+    -o -path '*.sh' \
+    -o -path "*.py" \
+    -o -path '*README*' \
+    -o -path '*.m4*' \
+    -o -path "*plot*" \
+    -o -path "*list-worlds*" \
+    -o -path "*.schema" \
+    -o -path "*.csv" \
+    -o -path '*otape17*' \
+    -o -path "*Test*" \
+    \) \
     -exec grep \
     --ignore-case \
     --recursive \
@@ -40,12 +48,20 @@ main() {
     --binary-files=without-match \
     --line-number \
     "$query" "{}" + 2>/dev/null \
-    | fzf --ansi --delimiter ':' --nth=3 --preview ' \
-      test -n {} && zless {1}                   \
-      | nl -ba                                  \
-      | perl -pe "s/"{2}"/>/g if "{2}" .. "{2}' \
-      --preview-window 'up:70%:+{2}-/3' \
-    | sed 's/:.*//'
+    | fzf --exit-0 --ansi --delimiter ':' --nth=3 --preview ' \
+    test -n {} && zless {1}                   \
+    | nl -ba                                  \
+    | perl -pe "s/"{2}"/->/g if "{2}" .. "{2}' \
+    --preview-window 'up:70%:+{2}-/3' \
+    | sed 's/:.*//' > "$outpath"
+
+  if [ -s $outpath ]; then
+      if [ "$edit_output" = 'true' ]; then
+        ${EDITOR:-command vim} "$(cat $outpath)"
+      else
+        cat "$outpath"
+      fi
+  fi
 }
 
 usage() {
@@ -59,17 +75,24 @@ die() {
 }
 
 argparse() {
+  edit_output=false
+
   # Parse -* args first
   for arg in "$@"
   do
     shift
     case "$arg" in
-      -q|--query)
-        query="$1"
-        continue
-        ;;
-      -f|--filename)
-        filename="$1"
+      # -q|--query)
+      #   query="$1"
+      #   continue
+      #   ;;
+      # -f|--filename)
+      #   filename="$1"
+      #   continue
+      #   ;;
+      -e|--edit)
+        # Open file using the default editor
+        edit_output=true
         continue
         ;;
       -h|--help)
@@ -85,8 +108,8 @@ argparse() {
   done
 
   # Then parse non -* args
-  test -z "$filename" && filename="$1"
-  test -z "$query" && query="$2"
+  filename="$1"
+  query="$2"
 }
 
 main "$@"
