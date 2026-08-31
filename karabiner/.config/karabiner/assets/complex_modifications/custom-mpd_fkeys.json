@@ -1,0 +1,31 @@
+{
+  "title": "MPD Controls via F7-F9",
+  "rules": [
+    {
+      "description": "F7/F8/F9 control MPD (prev/toggle/next)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "f7" },
+          "to": [
+            { "shell_command": "~/.local/bin/scripts/mpc_prev.sh" }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "f8" },
+          "to": [
+            { "shell_command": "~/.local/bin/scripts/mpc_toggle.sh" }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "f9" },
+          "to": [
+            { "shell_command": "~/.local/bin/scripts/mpc_next.sh" }
+          ]
+        }
+      ]
+    }
+  ]
+}
