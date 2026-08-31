@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+# Get bibtex citation from DOI (grabs bibtex citation from crossref.org)
+# src: (Connor McDaniel) https://youtu.be/nO4T8JDNYG0
+# Usage: doi2bib <doi>
+
+bibdir="${2:-.}"
+bibpath="${bibdir}/bib.bib"
+curl --silent "https://api.crossref.org/works/$1/transform/application/x-bibtex"

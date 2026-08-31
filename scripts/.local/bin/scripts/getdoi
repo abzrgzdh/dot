@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+# Grabs DOI from a pdf file
+# brew install pdftools/poppler
+# src: (Connor McDaniel) https://youtu.be/nO4T8JDNYG0
+# Usage: getdoi /path/to/pdf/file
+
+pdftotext -q "$1" - | grep -P -i "doi(:|.org)"

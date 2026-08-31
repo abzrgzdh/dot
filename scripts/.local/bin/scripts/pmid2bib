@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+# Get bibtex citation using pubmed id
+# src: (Connor McDaniel) https://youtu.be/nO4T8JDNYG0
+# brew install bibutils
+# Usage: pmid2bib <pmid)
+
+curl -s "https://www.ncbi.nlm.nih.gov/pubmed/$1?report=xml&format=raw" \
+| sed -e 's/&gt;/>/g' -e 's/&lt;/</g' | med2xml | xml2bib -nb -b
+
