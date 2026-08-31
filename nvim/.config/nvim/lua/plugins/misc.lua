@@ -10,4 +10,9 @@ return {
 
   -- Convinience on the command mode for doing :s and :g or :v
   { "wincent/loupe" },
+
+  { "maxmx03/solarized.nvim" },
+
+  { "raphael-proust/vacme" }
+
 }

@@ -1,13 +1,13 @@
 return {
   on_attach = function(client, bufnr)
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-    vim.keymap.set({ "n", "v" }, "<leader>=", function()
-      require("conform").format({
-        lsp_fallback = true,
-        async = false,
-        timeout_ms = 1000,
-      })
-    end)
+    -- vim.keymap.set({ "n", "v" }, "<leader>=", function()
+    --   require("conform").format({
+    --     lsp_fallback = true,
+    --     async = false,
+    --     timeout_ms = 1000,
+    --   })
+    -- end)
 
     --- What is this bruvsky?
     vim.api.nvim_create_autocmd('LspTokenUpdate', {
@@ -30,8 +30,8 @@ return {
               vim.iter(captures):any(function(capture)
                 return capture.lang == 'python'
                     and (
-                      capture.capture == 'variable.parameter'                -- inside function call
-                      or capture.capture == 'variable.builtin'               -- self / cls param
+                      capture.capture == 'variable.parameter'  -- inside function call
+                      or capture.capture == 'variable.builtin' -- self / cls param
                     )
               end)
           then
@@ -48,6 +48,7 @@ return {
       end,
     })
   end,
+
   cmd = { "basedpyright-langserver", "--stdio" },
   filetypes = { "python" },
   root_markers = {
@@ -64,8 +65,11 @@ return {
       analysis = {
         autoImportCompletions = true,
         autoSearchPaths = true,
-        diagnosticMode = "workspace",         -- default: openFilesOnly
         useLibraryCodeForTypes = true,
+
+        typeCheckingMode = "off",
+        diagnosticMode = "openFilesOnly", -- or workspace
+
         inlayHints = {
           functionReturnTypes = false,
           genericTypes = false,
@@ -73,8 +77,18 @@ return {
           variableTypes = false,
         },
       },
-      typeCheckingMode = "standard",       -- values: off | basic | standard | strict | recommended | all
+      -- typeCheckingMode = "standard", -- values: off | basic | standard | strict | recommended | all
+
+      linting = {
+        enabled = false,
+      }
+
     }
   },
   single_file_support = true,
+
+  -- Disable all diagnostics from Pyright (since I'm using ruff for that)
+  handlers = {
+    ["textDocument/publishDiagnostics"] = function() end,
+  }
 }

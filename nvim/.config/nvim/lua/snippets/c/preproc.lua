@@ -6,9 +6,18 @@ local line_begin = require("luasnip.extras.expand_conditions").line_begin
 return
 {
   -- GENERIC HEADER INCLUDE
-  s({ trig = "inn", snippetType = "autosnippet" },
+  s({ trig = "inc", snippetType = "autosnippet" },
     fmt(
       [[#include <{}.h>]],
+      {
+        d(1, get_visual)
+      }
+    ),
+    { condition = line_begin }
+  ),
+  s({ trig = "inq", snippetType = "autosnippet" },
+    fmt(
+      [[#include "{}.h"]],
       {
         d(1, get_visual)
       }

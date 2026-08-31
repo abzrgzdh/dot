@@ -34,36 +34,44 @@ vim.opt.wildcharm      = 26   -- ('<C-z>') substitue for 'wildchar' in macros
 vim.opt.wildmode       = {    -- shell-like autocomplete to unambigious portion
   'longest', 'list', 'full'
 }
-vim.opt.wildignore:append({ -- patterns to ingore durng file navigation
+
+_G.rc_wildignore = { -- patterns to ingore durng file navigation
   '*.git/*', '*.tags', 'tags', '*build/*', '*.o', '*.class', '*.egg-info/**',
   '__pycache__', 'venv', '*venv/**', '*dist/**', '**/.vim/undo/**', '**/.vim/pack/**',
-  '*.cache/*',
-})
+  '*.cache/*', "main", "a.out", "*.dSYM/*"
+}
+vim.opt.wildignore:append(_G.rc_wildignore)
 
-vim.opt.undofile       = true
-vim.opt.undodir        = vim.fn.stdpath('cache') .. "/undo"
+vim.opt.undofile   = true
+vim.opt.undodir    = vim.fn.stdpath('cache') .. "/undo"
 
-vim.opt.fillchars      = { diff = "∙", --[[eob = " ",--]] fold = " ", vert = "┃", }
+vim.opt.fillchars  = { diff = "∙", --[[eob = " ",--]] fold = " ", vert = "┃", }
 
-vim.opt.list           = true
-vim.opt.listchars      = { nbsp = '¬', extends = '»', precedes = '«', tab = '▸ ', trail = '•', }
+vim.opt.list       = true
+vim.opt.listchars  = { nbsp = '¬', extends = '»', precedes = '«', tab = '▸ ', trail = '•', }
 
-vim.opt.showcmd        = true
-vim.opt.showbreak      = '↪ '
-vim.opt.linebreak      = true
-vim.opt.cmdheight      = 1
-vim.opt.laststatus     = 3
-vim.opt.statusline     = table.concat({
-  "%<%f",        -- file path
-  " %y",         -- filetype
-  " %h%w%m%r",   -- help flag, preview flag, modified flag, readonly flag
-  " %=",         -- right align rest
-  "%{% &showcmdloc == 'statusline' ? '%-10.S ' : '' %}",
-  "%{% exists('b:keymap_name') ? '<'..b:keymap_name..'> ' : '' %}",
-  "%{% &busy > 0 ? '◐ ' : '' %}",
-  "%(%{luaeval('(package.loaded[''vim.diagnostic''] and vim.diagnostic.status()) or '''' ')} %)",
-  "%{% &ruler ? ( &rulerformat == '' ? '%-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}",
-}, " ")
+vim.opt.showcmd    = true
+vim.opt.showbreak  = '↪ '
+vim.opt.linebreak  = true
+vim.opt.cmdheight  = 1
+
+vim.opt.laststatus = 3
+
+vim.cmd [[
+  set statusline=%<%f\ %y\ %h%w%m%r\ %=%{%\ &showcmdloc\ ==\ 'statusline'\ ?\ '%-10.S\ '\ :\ ''\ %}%{%\ exists('b:ke\ ymap_name')\ ?\ '<'..b:keymap_name..'>\ '\ :\ ''\ %}%{%\ &busy\ >\ 0\ ?\ '◐\ '\ :\ ''\ %}%{%\ luaeval('(package.loaded[''vim.diagnostic'']\ and\ vim.diagnostic.status()\ ..\ ''\ '')\ or\ ''''\ ')\ %}%{%\ &ruler\ ?\ (\ &rulerformat\ ==\ ''\ ?\ '%-14.(%l,%c%V%)\ %P'\ :\ &rulerformat\ )\ :\ ''\ %}
+]]
+
+-- vim.opt.statusline     = table.concat({
+--   "%<%f",        -- file path
+--   " %y",         -- filetype
+--   " %h%w%m%r",   -- help flag, preview flag, modified flag, readonly flag
+--   " %=",         -- right align rest
+--   "%{% &showcmdloc == 'statusline' ? '%-10.S ' : '' %}",
+--   "%{% exists('b:keymap_name') ? '<'..b:keymap_name..'> ' : '' %}",
+--   "%{% &busy > 0 ? '◐ ' : '' %}",
+--   "%(%{luaeval('(package.loaded[''vim.diagnostic''] and vim.diagnostic.status()) or '''' ')} %)",
+--   "%{% &ruler ? ( &rulerformat == '' ? '%-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}",
+-- }, " ")
 
 vim.opt.updatetime     = 200 -- CursorHold interval
 
@@ -133,15 +141,19 @@ vim.wo.colorcolumn    = "+1"
 --     vim.b[bufnr].textwidth = tonumber(val)
 -- end
 
-vim.opt.guicursor     = {
-  "n-v-c-sm:block",
-  "i-ci-ve:block",
-  "r-cr-o:hor20",
-  "t:block-blinkon500-blinkoff500-TermCursor"
-}
+-- vim.opt.guicursor     = {
+--   "n-v-c-sm:block",
+--   "i-ci-ve:block",
+--   "r-cr-o:hor20",
+--   "t:block-blinkon500-blinkoff500-TermCursor"
+-- }
 
 if vim.fn.has('nvim-0.12') == 1 then
   vim.o.diffopt = 'internal,filler,closeoff,inline:simple,linematch:40'
 elseif vim.fn.has('nvim-0.11') == 1 then
   vim.o.diffopt = 'internal,filler,closeoff,linematch:40'
 end
+
+-- -- Enable undercurl
+-- vim.cmd([[let &t_Cs = "\e[4:3m"]])
+-- vim.cmd([[let &t_Ce = "\e[4:0m"]])

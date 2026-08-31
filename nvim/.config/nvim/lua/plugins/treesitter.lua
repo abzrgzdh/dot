@@ -1,107 +1,107 @@
 return {
-  "nvim-treesitter/nvim-treesitter",
-  dependencies = {
-    "nvim-treesitter/nvim-treesitter-context",
-    "JoosepAlviste/nvim-ts-context-commentstring",
-    "RRethy/nvim-treesitter-endwise",
-    "nvim-treesitter/nvim-treesitter-context",
-    "windwp/nvim-ts-autotag",
-  },
-  config = function()
-    require 'nvim-treesitter.configs'.setup({
-      ensure_installed = {
-        'c',
-        'cpp',
-        'lua',
-        'vim',
-        'vimdoc',
-        'markdown',
-        'markdown_inline',
-        'html'
-        -- 'foam'
-      },
-      auto_install = false,
-      highlight = {
-        enable = true,
-        disable = function(lang, buf)
-          -- I don't like TS highlighting for this languages,
-          -- LSP highlighting does a pretty good job.
-          if lang == "cpp"
-              or lang == "c"
-              or lang == "rust"
-              or lang == "html"
-          then
-            return true
-          end
-
-          -- Disable TS for large files
-          local max_filesize = 100 * 1024 -- 100 KB
-          local ok, stats = pcall(
-            vim.uv.fs_stat,
-            vim.api.nvim_buf_get_name(buf)
-          )
-          if ok and stats and stats.size > max_filesize then
-            return true
-          end
-        end,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = {
-        enable = true,
-        -- I don't like TS indentation rules for HTML
-        disable = { "html", "markdown", "foam" },
-      },
-
-      ----------------------- PLUGINS -----------------------
-
-      endwise = { enable = true, },
-
-    })
-
-
-    require 'treesitter-context'.setup {
-      enable = true,
-      max_lines = 4,
-      min_window_height = 0,
-      line_numbers = true,
-      multiline_threshold = 1,
-      trim_scope = 'outer',
-      mode = 'cursor',
-      separator = nil,
-      zindex = 20,
-      on_attach = nil,
-    }
-
-    -- Jumping to context (upwards)
-    vim.keymap.set("n", "[c", function()
-      require("treesitter-context").go_to_context(vim.v.count1)
-    end, { silent = true })
-
-    require('ts_context_commentstring').setup {}
-    vim.g.skip_ts_context_commentstring_module = true
-
-
-    require('nvim-ts-autotag').setup({
-      opts = {
-        -- Defaults
-        enable_close = false,         -- Auto close tags
-        enable_rename = true,         -- Auto rename pairs of tags
-        enable_close_on_slash = false -- Auto close on trailing </
-      },
-      -- Also override individual filetype configs, these take priority.
-      -- Empty by default, useful if one of the "opts" global settings
-      -- doesn't work well in a specific filetype
-      per_filetype = {
-        ["html"] = {
-          enable_close = true
-        },
-        ["php"] = {
-          enable_close = true
-        },
-        ["phtml"] = {
-          enable_close = true
-        }
-      }
-    })
-  end
+  -- "nvim-treesitter/nvim-treesitter",
+  -- dependencies = {
+  --   "nvim-treesitter/nvim-treesitter-context",
+  --   "JoosepAlviste/nvim-ts-context-commentstring",
+  --   "RRethy/nvim-treesitter-endwise",
+  --   "nvim-treesitter/nvim-treesitter-context",
+  --   "windwp/nvim-ts-autotag",
+  -- },
+  -- config = function()
+  --   require 'nvim-treesitter.configs'.setup({
+  --     ensure_installed = {
+  --       'c',
+  --       'cpp',
+  --       'lua',
+  --       'vim',
+  --       'vimdoc',
+  --       'markdown',
+  --       'markdown_inline',
+  --       'html'
+  --       -- 'foam'
+  --     },
+  --     auto_install = false,
+  --     highlight = {
+  --       enable = true,
+  --       disable = function(lang, buf)
+  --         -- I don't like TS highlighting for this languages,
+  --         -- LSP highlighting does a pretty good job.
+  --         if lang == "cpp"
+  --             or lang == "c"
+  --             or lang == "rust"
+  --             or lang == "html"
+  --         then
+  --           return true
+  --         end
+  --
+  --         -- Disable TS for large files
+  --         local max_filesize = 100 * 1024 -- 100 KB
+  --         local ok, stats = pcall(
+  --           vim.uv.fs_stat,
+  --           vim.api.nvim_buf_get_name(buf)
+  --         )
+  --         if ok and stats and stats.size > max_filesize then
+  --           return true
+  --         end
+  --       end,
+  --       additional_vim_regex_highlighting = false,
+  --     },
+  --     indent = {
+  --       enable = true,
+  --       -- I don't like TS indentation rules for HTML
+  --       disable = { "html", "markdown", "foam", "c", "cpp" },
+  --     },
+  --
+  --     ----------------------- PLUGINS -----------------------
+  --
+  --     endwise = { enable = true, },
+  --
+  --   })
+  --
+  --
+  --   require 'treesitter-context'.setup {
+  --     enable = true,
+  --     max_lines = 4,
+  --     min_window_height = 0,
+  --     line_numbers = true,
+  --     multiline_threshold = 1,
+  --     trim_scope = 'outer',
+  --     mode = 'cursor',
+  --     separator = nil,
+  --     zindex = 20,
+  --     on_attach = nil,
+  --   }
+  --
+  --   -- Jumping to context (upwards)
+  --   vim.keymap.set("n", "[h", function()
+  --     require("treesitter-context").go_to_context(vim.v.count1)
+  --   end, { silent = true })
+  --
+  --   require('ts_context_commentstring').setup {}
+  --   vim.g.skip_ts_context_commentstring_module = true
+  --
+  --
+  --   require('nvim-ts-autotag').setup({
+  --     opts = {
+  --       -- Defaults
+  --       enable_close = false,         -- Auto close tags
+  --       enable_rename = true,         -- Auto rename pairs of tags
+  --       enable_close_on_slash = false -- Auto close on trailing </
+  --     },
+  --     -- Also override individual filetype configs, these take priority.
+  --     -- Empty by default, useful if one of the "opts" global settings
+  --     -- doesn't work well in a specific filetype
+  --     per_filetype = {
+  --       ["html"] = {
+  --         enable_close = true
+  --       },
+  --       ["php"] = {
+  --         enable_close = true
+  --       },
+  --       ["phtml"] = {
+  --         enable_close = true
+  --       }
+  --     }
+  --   })
+  -- end
 }

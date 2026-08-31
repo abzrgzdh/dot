@@ -50,41 +50,41 @@ return
     ),
     { condition = tex.in_mathzone }
   ),
-  -- -- SUPERSCRIPT SHORTCUT ??
-  -- -- Places the first alphanumeric character after the trigger into a superscript.
-  -- s({trig = '([%w%)%]%}])"([%w])', regTrig = true, wordTrig = false, snippetType="autosnippet"},
-  --   fmta(
-  --     "<>^{<>}",
-  --     {
-  --       f( function(_, snip) return snip.captures[1] end ),
-  --       f( function(_, snip) return snip.captures[2] end ),
-  --     }
-  --   ),
-  --   {condition = tex.in_mathzone}
-  -- ),
-  -- -- SUBSCRIPT SHORTCUT
-  -- -- Places the first alphanumeric character after the trigger into a subscript.
-  -- s({trig = '([%w%)%]%}]):([%w])', regTrig = true, wordTrig = false, snippetType="autosnippet"},
-  --   fmta(
-  --     "<>_{<>}",
-  --     {
-  --       f( function(_, snip) return snip.captures[1] end ),
-  --       f( function(_, snip) return snip.captures[2] end ),
-  --     }
-  --   ),
-  --   {condition = tex.in_mathzone}
-  -- ),
+  -- SUPERSCRIPT SHORTCUT
+  -- Places the first alphanumeric character after the trigger into a superscript.
+  s({trig = '([%w%)%]%}])"([%w])', regTrig = true, wordTrig = false, snippetType="autosnippet"},
+    fmta(
+      "<>^{<>}",
+      {
+        f( function(_, snip) return snip.captures[1] end ),
+        f( function(_, snip) return snip.captures[2] end ),
+      }
+    ),
+    {condition = tex.in_mathzone}
+  ),
+  -- SUBSCRIPT SHORTCUT
+  -- Places the first alphanumeric character after the trigger into a subscript.
+  s({trig = '([%w%)%]%}]):([%w])', regTrig = true, wordTrig = false, snippetType="autosnippet"},
+    fmta(
+      "<>_{<>}",
+      {
+        f( function(_, snip) return snip.captures[1] end ),
+        f( function(_, snip) return snip.captures[2] end ),
+      }
+    ),
+    {condition = tex.in_mathzone}
+  ),
   -- EULER'S NUMBER SUPERSCRIPT SHORTCUT (use exp when it becomes cumbersome to use e)
-  -- s({trig = '([^%a])ee', regTrig = true, wordTrig = false, snippetType="autosnippet"},
-  --   fmta(
-  --     "<>e^{<>}",
-  --     {
-  --       f( function(_, snip) return snip.captures[1] end ),
-  --       d(1, get_visual)
-  --     }
-  --   ),
-  --   {condition = tex.in_mathzone}
-  -- ),
+  s({trig = '([^%a])ee', regTrig = true, wordTrig = false, snippetType="autosnippet"},
+    fmta(
+      "<>e^{<>}",
+      {
+        f( function(_, snip) return snip.captures[1] end ),
+        d(1, get_visual)
+      }
+    ),
+    {condition = tex.in_mathzone}
+  ),
   -- ZERO SUBSCRIPT SHORTCUT
   s({ trig = '([%a%)%]%}])00', regTrig = true, wordTrig = false, snippetType = "autosnippet" },
     fmta(
@@ -97,12 +97,23 @@ return
     { condition = tex.in_mathzone }
   ),
   -- MINUS ONE SUPERSCRIPT SHORTCUT
-  s({ trig = '([%a%)%]%}])11', regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+  s({ trig = '([%a%)%]%}])01', regTrig = true, wordTrig = false, snippetType = "autosnippet" },
     fmta(
       "<>_{<>}",
       {
         f(function(_, snip) return snip.captures[1] end),
         t("-1")
+      }
+    ),
+    { condition = tex.in_mathzone }
+  ),
+  -- ONE SUPERSCRIPT SHORTCUT
+  s({ trig = '([%a%)%]%}])11', regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+    fmta(
+      "<>_{<>}",
+      {
+        f(function(_, snip) return snip.captures[1] end),
+        t("1")
       }
     ),
     { condition = tex.in_mathzone }
@@ -365,6 +376,15 @@ return
     ),
     { condition = tex.in_mathzone }
   ),
+
+  -- \newcommand{\p}{\partial}
+  s({ trig = "pp", snippetType = "autosnippet" },
+    {
+      t("\\p"),
+    },
+    { condition = tex.in_mathzone }
+  ),
+
   -- -- PARTIAL DERIVATIVE with denominator only
   -- s({trig = "([^%a])pV", wordTrig = false, regTrig = true, snippetType="autosnippet"},
   --   fmta(

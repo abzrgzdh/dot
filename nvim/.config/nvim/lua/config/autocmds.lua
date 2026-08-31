@@ -45,3 +45,47 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end
   end,
 })
+
+-- Some unknown issue with fuzzy finder plugins
+local fix_relative_path = augroup("FixRelPath", { clear = true })
+autocmd({ "BufRead", "BufReadPost", "FileReadPost" }, {
+  pattern = "*",
+  callback = function()
+    vim.fn.chdir(vim.fn.getcwd())
+  end,
+  group = fix_relative_path,
+})
+
+
+-- Enable cursorcolumn when we
+-- - enter into visual block mode from any mode
+-- - enter into insert mode from visual block mode
+-- and Disables it when we leave the modes above
+
+local group = vim.api.nvim_create_augroup("CursorColumnVisualBlock", { clear = true })
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+  group = group,
+  pattern = "*",
+  callback = function()
+    if vim.fn.mode() == "\22" or vim.v.event.old_mode == "\22" then
+      vim.opt_local.cursorcolumn = true
+    end
+  end
+})
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+  group = group,
+  pattern = "*",
+  callback = function()
+    if vim.fn.mode() == "\22" then
+      vim.opt_local.cursorcolumn = true
+      return
+    end
+    if vim.fn.mode() == "i" and vim.v.event.old_mode == "\22" then
+      vim.opt_local.cursorcolumn = true
+    else
+      vim.opt_local.cursorcolumn = false
+    end
+  end,
+})

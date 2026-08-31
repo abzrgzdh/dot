@@ -18,6 +18,9 @@ vim.opt_local.cinoptions = vim.opt_local.cinoptions + { "N-s" }
 -- Don't indent templates in C++
 vim.opt_local.cinoptions = vim.opt_local.cinoptions + { "t0" }
 
+-- Parameter/argument wrap
+vim.opt_local.cinoptions = vim.opt_local.cinoptions + { ":0", "l1", "t0", "g0", "(0" }
+
 -- vim.opt.foldmethod      = 'expr'
 
 -- local treesitter_parsers = require('nvim-treesitter.parsers')

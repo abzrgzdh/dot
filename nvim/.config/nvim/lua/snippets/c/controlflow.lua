@@ -80,7 +80,7 @@ return
     { condition = line_begin }
   ),
   -- SWITCH CASE
-  s({ trig = "cas", snippetType = "autosnippet" },
+  s({ trig = "cas" },
     fmta(
       [[
       case <>:

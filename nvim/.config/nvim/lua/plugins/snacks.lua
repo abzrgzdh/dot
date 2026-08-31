@@ -13,6 +13,7 @@ return {
     picker = {
       enabled = true,
       layout = "ivy",
+      hidden = true,
       layouts = {
         ivy = {
           layout = {
@@ -43,16 +44,25 @@ return {
 
   },
   keys = {
-    { "<leader>f",  function() Snacks.picker.smart({ cwd = vim.fn.getcwd() }) end,                            desc = "Smart Find Files" },
-    { "<leader>,",  function() Snacks.picker.buffers({ on_show = function() vim.cmd.stopinsert() end, }) end, desc = "Buffers" },
-    { "<leader>/",  function() Snacks.picker.grep() end,                                                      desc = "Grep" },
-    { "<leader>:",  function() Snacks.picker.command_history() end,                                           desc = "Command History" },
-    { "<leader>n",  function() Snacks.picker.notifications() end,                                             desc = "Notification History" },
-    { "<leader>en", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end,                   desc = "Find Config File" },
-    { "<leader>ed", function() Snacks.picker.smart({ cwd = "~/.dot/" }) end,                                  desc = "Smart Find Files" },
-    { "<leader>es", function() Snacks.picker.files({ cwd = "~/workspace/abzrg/snippets/" }) end,              desc = "Smart Find Files" },
-    { "<leader>eh", function() Snacks.picker.help({ layout = "select" }) end,                                 desc = "Help Pages" },
-    { "<leader>ek", function() Snacks.picker.keymaps() end,                                                   desc = "Keymaps" },
-    { "<leader>eo", function() Snacks.picker.recent() end,                                                    desc = "Recent" },
+    {
+      "<leader>f",
+      function()
+        Snacks.picker.smart({
+          cwd = vim.fn.getcwd(),
+          layout = { preset = "ivy" },
+          exclude = _G.rc_wildignore,
+          multi = { "files" },
+        })
+      end,
+    },
+    { "<leader>j",  function() Snacks.picker.smart({ cwd = vim.fn.getcwd() }) end },
+    { "<leader>,",  function() Snacks.picker.buffers({ on_show = function() vim.cmd.stopinsert() end, }) end },
+    { "<leader>/",  function() Snacks.picker.grep() end },
+    { "<leader>n",  function() Snacks.picker.notifications() end },
+    { "<leader>en", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end },
+    { "<leader>ed", function() Snacks.picker.git_files({ cwd = vim.fn.expand("~/.dot/") }) end },
+    { "<leader>es", function() Snacks.picker.git_files({ cwd = "~/code/abzrg/snippets/" }) end },
+    { "<leader>ek", function() Snacks.picker.keymaps() end },
+    { "<leader>eo", function() Snacks.picker.recent() end },
   }
 }

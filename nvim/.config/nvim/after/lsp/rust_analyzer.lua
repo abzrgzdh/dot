@@ -23,9 +23,9 @@ return {
       diagnostics = {
         enable = true,
       },
-      checkOnSave = {
-        command = "clippy",
-      },
+      -- checkOnSave = {
+      --   command = "clippy",
+      -- },
     }
   },
   before_init = function(init_params, config)

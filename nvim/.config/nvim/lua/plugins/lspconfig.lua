@@ -22,7 +22,7 @@ return {
         lazy = true,
         cmd = { "Outline", "OutlineOpen" },
         keys = { -- Example mapping to toggle outline
-          { "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
+          { "<leader>O", "<cmd>Outline<CR>", desc = "Toggle outline" },
         },
         opts = {
           outline_window = {
@@ -62,6 +62,7 @@ return {
         "clangd",
         "html", "css", "ts_ls", "json",
         "basedpyright",
+        "ruff",
         "texlab",
         "julials",
         "gopls",

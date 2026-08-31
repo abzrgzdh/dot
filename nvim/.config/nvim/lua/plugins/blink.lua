@@ -37,7 +37,7 @@ return {
         -- Show documentation when selecting a completion item
         documentation = {
           auto_show = true,
-          auto_show_delay_ms = 0,
+          -- auto_show_delay_ms = 0,
           -- window = {
           --   border = "rounded",
           -- }
@@ -48,6 +48,8 @@ return {
         ghost_text = { enabled = false },
 
         menu = {
+          -- auto_show = false,
+          -- auto_show_delay_ms = 500,
           border = "single",
           -- winhighlight = "Normal:Normal",
           draw = {
@@ -57,7 +59,8 @@ return {
         },
 
         trigger = {
-          show_on_insert_on_trigger_character = false,
+          show_on_insert_on_trigger_character = true,
+          show_on_backspace_in_keyword = true,
         },
 
         accept = {
@@ -73,7 +76,10 @@ return {
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        default = {
+          'lsp',
+          'path', 'snippets', 'buffer'
+        },
 
         providers = {
           path = {
@@ -81,7 +87,7 @@ return {
             score_offset = 4,
           },
           snippets = {
-            min_keyword_length = 1,
+            min_keyword_length = 3,
             score_offset = 120,
           },
           lsp = {
@@ -89,7 +95,7 @@ return {
             score_offset = 90,
           },
           buffer = {
-            min_keyword_length = 4,
+            min_keyword_length = 3,
             score_offset = 100,
           },
         },
@@ -103,6 +109,14 @@ return {
 
       keymap = {
         preset = "super-tab",
+
+        ["<C-Space>"] = {
+          "show",
+          "hide",
+          -- "show_documentation",
+          -- "hide_documentation",
+        },
+
         ["<CR>"] = { "accept", "fallback" },
         ["<C-l>"] = { 'hide', 'fallback' },
         -- ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
@@ -110,6 +124,10 @@ return {
         -- ["<C-L"] = { 'hide', 'fallback' },
         ["<C-j"] = {},
         ["<C-k>"] = {},
+        ['<C-b>'] = {},
+        ['<C-f>'] = {},
+        ['<C-u>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-d>'] = { 'scroll_documentation_down', 'fallback' },
         -- ["<C-n"] = { "select_next", "fallback" },
         -- ["<C-p>"] = { "select_prev", "fallback" },
       },

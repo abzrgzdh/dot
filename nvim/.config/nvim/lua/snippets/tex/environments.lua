@@ -214,6 +214,17 @@ return
       {
         i(1),
       })),
+  -- DISPLAY MATH ON NEW LINE
+  s({ trig = "^MM", regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+    fmta(
+      [[
+      \[
+        <>
+      \]
+      ]],
+      {
+        i(1),
+      })),
   -- FIGURE
   s({ trig = "figure", priority = 1010 },
     fmta(

@@ -56,4 +56,14 @@ return {
         ]], { i(1, "public"), i(2), i(3, "void"), i(4, "myMethod"), i(5), i(6), i(0) })
   ),
 
+  s({ trig = "try" },
+    fmta([[
+        try {
+            <>
+        } catch (<>) {
+            <>
+        }<>
+        ]], { i(1), i(2, "Exception e"), i(3), i(0) })
+  ),
+
 }

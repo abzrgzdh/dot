@@ -22,13 +22,13 @@ return {
     )
   ),
 
-  s(
-    { trig = "; ", wordTrig = false, snippetType = "autosnippet" },
-    fmta(
-      "<>",
-      {
-        t(": "),
-      }
-    )
-  ),
+  -- s(
+  --   { trig = "; ", wordTrig = false, snippetType = "autosnippet" },
+  --   fmta(
+  --     "<>",
+  --     {
+  --       t(": "),
+  --     }
+  --   )
+  -- ),
 }

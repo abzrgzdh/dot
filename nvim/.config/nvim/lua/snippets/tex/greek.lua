@@ -73,6 +73,10 @@ return
     {
       t("\\nu"),
     }),
+  s({ trig = ";N", snippetType = "autosnippet" },
+    {
+      t("\\nabla"),
+    }),
   s({ trig = ";x", snippetType = "autosnippet" },
     {
       t("\\xi"),
