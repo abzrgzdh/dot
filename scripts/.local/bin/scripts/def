@@ -1,0 +1,46 @@
+#!/bin/sh -e
+
+# sdcv: Commandline dictionary
+# Dictionaries are located in ~/.local/share/stardict/dic/
+# brew install sdcv
+# src: Arch Wiki
+
+WORDS="/usr/share/dict/words"
+colorflag="--color"
+
+if [ $# = 0 ]; then
+    word=$(cat $WORDS | fzf --print-query --exit-0 -1 | tail -n1)
+else
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -nc|--no-color)
+                colorflag=""
+                shift
+                ;;
+            # -h|--help)
+                #     display_help
+                #     ;;
+            *)
+                word="$1"
+                shift
+                ;;
+        esac
+    done
+fi
+
+
+[ $(tput cols) -lt 80 ] && width=$(tput cols)
+sdcv -n --utf8-output ${colorflag} "${word}" 2>&1 \
+| sed 's/<br>/\n/g' \
+| sed 's/<BR>/\n/g' \
+| sed 's/|/\n/g' \
+| sed -e 's/<[^>]*>//g' \
+| fold -s -w ${width:-80} | \less -FRX
+
+
+# [ $(tput cols) -lt 80 ] && width=$(tput cols)
+# sdcv -n --utf8-output --color "$@" 2>&1 |
+#     html2text -utf8 -width ${width:-80} |
+#     sed -e 's/<\(br\|BR\||\)>/\n/g' -e 's/<[^>]*>//g' |
+#     sed -E -e 's,//,\n,g' -e 's,--[^>],\n,g' -e 's, -->,\n-->,g' |
+#     less -FRX
