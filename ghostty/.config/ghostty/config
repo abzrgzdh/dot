@@ -1,58 +1,121 @@
-# --- [ Theme ] -------------------------------------------------------------------------
+theme = nvim dark
+background = #222425
+# # background = #0e1415
+# cursor-text = "black"
+# cursor-color = "white"
 
-# theme = "xcodedarkhc"
-# theme = "rose-pine"
-theme = NvimDark
-cursor-invert-fg-bg = true
+adjust-cursor-thickness = 3
 
-# --- [ Font ] --------------------------------------------------------------------------
+font-thicken = true
+font-size = 19.0
 
-font-family = "menlo"
-# font-variation = wght=400
-font-size = 19
-font-thicken = false
+# font-size = 21.0
+# font-family = Iosevka nerd font
+# font-feature = +ss15
+# adjust-cell-height = 2%
+# adjust-cell-width = 0%
 
-# --- [ Window ] ------------------------------------------------------------------------
+# font-size = 19.0
+# font-family = Monaco
 
-window-theme = auto
-window-colorspace = "display-p3"
-window-step-resize = true
-resize-overlay = never
+# font-size = 18.7
+# font-family = Noto Sans Mono
 
-# adjust-cell-height = 35%
-# adjust-cell-width  = 0
+# font-size = 19.0
+# font-family = saucecodepro nerd font
 
-# Padding
-# window-padding-x =
-# window-padding-y =
+# font-size = 22.5
+# font-family = inconsolata nerd font
 
+# font-size = 20
+# font-family = courier
+# font-feature = feat=0, -calt, -liga, -dlig
+# adjust-cell-height = 19%
+# adjust-cell-width = 0%
+
+# font-size = 20.4
+# font-family = consolas nerd font
+# adjust-cell-height = -24%
+# adjust-cell-width = -7%
+
+# font-size = 18.0
+# font-family = templeos
+
+# font-size = 19.0
+# font-family = lucida sans typewriter for powerline
+# adjust-cell-height = -19%
+# adjust-cell-width = -7%
+
+# font-size = 22.0
+# font-family = terminus (ttf)
+# adjust-cell-height = 6%
+# adjust-cell-width = 3%
+
+# font-size = 20.3
+# font-family = menlo
+# # adjust-cell-height = 13%
+# # adjust-cell-height = -20%
+# # adjust-cell-width = -8%
+
+# font-size = 20.3
+# font-family = dejavusansm nerd font
+# # adjust-cell-height = 13%
+# # adjust-cell-height = -20%
+# # adjust-cell-width = -8%
+
+
+# font-size = 20.0
+# font-family = atkynsonmono nerd font
+# adjust-cell-height = 6%
+# # adjust-cell-height = -20%
+# adjust-cell-width = -2%
+
+
+# font-size = 19.6
+# font-family = firacode nerd font
+# adjust-cell-height = 4%
+# adjust-cell-width = 0%
+
+# font-size = 20.5
+# font-family = TX-02
+# adjust-cell-height = 2%
+# # adjust-cell-width = 0%
+
+# font-size = 23.6
+# font-family = ubuntumono nerd font mono
+
+font-size = 21.5
+font-family = literationmono nerd font
+font-thicken = true
+adjust-cell-height = 0%
+adjust-cell-width =  0%
+
+# font-size = 18.8
+# font-family = hack nerd font
+
+# font-style = Medium
+# font-feature = +ss03
+# font-feature = +liga,+calt,+dlig
+# font-thicken = true
+# adjust-cell-height = -5%
+# adjust-cell-width = 3%
+
+window-decoration = none
 window-padding-balance = true
 window-padding-color = extend
-
-# Open maximized
 window-height = 1000
 window-width = 1000
+window-padding-x = 2
+window-padding-y = 0
 
-# background-opacity = 0.95
-# background-blur-radius = 20
+cursor-style-blink = false
 
-# --- [ Misc. ] -------------------------------------------------------------------------
-
-# command = /opt/homebrew/bin/tmux new -A
 shell-integration = zsh
 shell-integration-features = sudo,title,no-cursor
 
-mouse-hide-while-typing = true
-confirm-close-surface = false
-quit-after-last-window-closed = false
-link-url = true
-
-# --- [ Keybinds ] ----------------------------------------------------------------------
-
 # keybind = clear
 # keybind = super+backspace=text:\x17
-keybind = ctrl+backspace=text:\x17
-keybind = super+backspace=text:\x15
+keybind = super+backspace=text:\x17
 keybind = alt+backspace=text:\x1b\x7f
 keybind = super+delete=text:\x0b
 keybind = super+comma=ignore
@@ -80,5 +143,7 @@ keybind = super+period=esc:.
 keybind = super+semicolon=ignore
 
 macos-option-as-alt = left
+
+clipboard-paste-protection = false
 
 # vim: ft=toml
