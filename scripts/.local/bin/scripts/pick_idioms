@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Usage: ./pick_idiom.sh [dir1 dir2 ...]
+DIRS=("${@:-$HOME/Documents/.archive/english/idioms/intermediate}")
+
+# Pick one random file from the given dirs
+file=$(find "${DIRS[@]}" -type f | shuf -n 1)
+
+
+printf "$(basename $file): "
+
+# Collect idiom blocks (non-indented line = new block), pick one at random
+awk '
+/^[^ \t]/ {
+    if (block != "") blocks[++n] = block
+    block = $0 "\n"
+    next
+}
+{ block = block $0 "\n" }
+END {
+    if (block != "") blocks[++n] = block
+    if (n == 0) { print "No idioms found."; exit 1 }
+    srand()
+    printf "%s", blocks[int(rand() * n) + 1]
+}
+' "$file" | tee -a $HOME/idioms-of-the-day
