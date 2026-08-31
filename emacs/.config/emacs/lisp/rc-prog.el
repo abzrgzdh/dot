@@ -4,7 +4,7 @@
 ;; `paredit' Helps editing lisp code (or the AST) easier.
 (use-package paredit
   :ensure t
-  :hook ((emacs-lisp-mode . paredit-mode))
+  ;; :hook ((emacs-lisp-mode . paredit-mode))
   ;; :bind (
   ;;        ("M-<right>" . paredit-forward-slurp-sexp)
   ;;        ("M-<left>" . paredit-forward-slurp-sexp))
