@@ -27,5 +27,6 @@ local function slow_play(table)
   end
 end
 
-mp.add_forced_key_binding("MBTN_RIGHT", "hold_slow", slow_play, { complex = true, repeatable = false })
-mp.add_forced_key_binding("MBTN_LEFT", "hold_fast", fast_play, { complex = true, repeatable = false })
+-- mp.add_forced_key_binding("MBTN_RIGHT", "hold_slow", slow_play, { complex = true, repeatable = false })
+mp.add_forced_key_binding("MBTN_LEFT", "hold_fast", fast_play, { complex = true, repeatable = true })
+mp.add_forced_key_binding(";", "hold_fast", fast_play, { complex = true, repeatable = false })
