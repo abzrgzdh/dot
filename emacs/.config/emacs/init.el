@@ -41,6 +41,8 @@
   (require 'rc-dired)            ; Dired and speedbar settings.
   (require 'rc-completion)       ; Completion everywhere.
 
+  (require 'rc-prog)
+
   (require 'rc-lang)                    ; Spell checking and input methods.
   (require 'rc-prose)                   ; Text-Mode, Org-Mode, ...
   (require 'rc-tex)                     ; TeX, AucTeX, RefTeX, Citar, ...
