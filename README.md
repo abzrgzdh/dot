@@ -55,3 +55,25 @@ brew link --overwrite moreutils
 brew unlink parallel
 brew link --overwrite parallel
 ```
+
+
+## Issue with "Currently Sharing" not going away
+
+I have a solution to such scenario. Open Activity Monitor and Find Control
+Centre in the process list here, select it and click on X button on toolbar of
+Activity Monitor
+
+This will restart the control centre and the state will be refreshed for
+currently running items, hence it will be gone.
+
+[src](https://www.reddit.com/r/MacOS/comments/18tcbk5/comment/l1zcum9/)
+
+
+## Homebrew upgrade attestation issue
+
+https://til.simonwillison.net/homebrew/no-verify-attestations
+
+```sh
+brew upgrade gh
+HOMEBREW_NO_VERIFY_ATTESTATIONS=1 brew upgrade
+```
