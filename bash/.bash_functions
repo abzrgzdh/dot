@@ -79,3 +79,25 @@ shdl2() { curl -O "https:"$(curl -s https://sci-hub.se/"$@" | grep location.href
 
 # Create a directory and take me there
 take() { mkdir $1 && cd $1 ;}
+
+# LLVM tools environment
+llvm_load () {
+	export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+	export CC="/opt/homebrew/opt/llvm/bin/clang"
+	export CXX="/opt/homebrew/opt/llvm/bin/clang++"
+	export LDFLAGS="$LDFLAGS -L/opt/homebrew/opt/llvm/lib"
+	export CPPFLAGS="$CPPFLAGS -I/opt/homebrew/opt/llvm/include -Wall -Wextra"
+	export CFLAGS="$CFLAGS -I/opt/homebrew/opt/llvm/include -Wall -Wextra"
+}
+
+
+# Then use y instead of yazi to start, and press q to quit, you'll see the CWD changed. Sometimes,
+# you don't want to change, press Q to quit.
+function lf() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}

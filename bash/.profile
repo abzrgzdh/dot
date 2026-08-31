@@ -171,3 +171,5 @@
 
 #. "/Users/ali/.local/share/cargo/env"
 . "$HOME/.cargo/env"
+
+echo hi from bashprofile

@@ -73,7 +73,7 @@ set keyseq-timeout 0
 "\e[": character-search-backward
 
 # Magic space
-$if Bash
+$if term=dumb
   Space: magic-space
   set colored-stats on
 $endif
