@@ -1,8 +1,12 @@
 [core]
-	compression = 0
+	; compression = 0
 	autocrlf = input
 	; pager = less -FRSX
-	editor = nvim
+	; pager = less -x1,5 -iFXRS
+	; pager = less -+X
+	pager = less --tabs=4 -iRFX -+W -+J # -S
+	; pager = delta
+	editor = "$EDITOR"
 	excludesFile = ~/.gitignore
 
 [init]
@@ -11,12 +15,14 @@
 
 [alias]
 	wt = worktree
-	cf = !git config --global --edit
+	cf = config --edit
+	cfg = config --global --edit
 
 	amend = commit --amend -v
 	no-edit = commit --amend --no-edit
 	ci = commit -v
 
+	sw = switch
 	co = checkout
 	cb = checkout -b
 	b = branch
@@ -37,16 +43,19 @@
 	ff = merge --ff-only
 	noff = merge --no-ff
 	pom = push origin master
-	st = status -sb
-	stat = status --untracked-files=no
+	st = status --short --branch
+	stu = status --short --branch --untracked-files=no
+	stat = show --stat
+	# from upstream to head
+	statu = show --stat @{u}..HEAD
 
 	# Like git whatchanged
 	what = log --raw --no-merges
 
 	# Beautiful log
 	l = log --simplify-merges --graph --pretty="tformat:%C(yellow)%h%Creset\\ %Cgreen(%ar)%Creset\\ %C(blue)<%an>%Creset\\ %C(red)%d%Creset\\ %s"
-	# Smart Log
-	sl = log --graph --pretty=format:'%C(auto)%h%Creset%C(auto)%d%Creset %s %C(magenta bold)(%cr)%Creset %C(cyan)<%aN>%Creset' --all --simplify-by-decoration
+	la = log --all --simplify-merges --graph --pretty="tformat:%C(yellow)%h%Creset\\ %Cgreen(%ar)%Creset\\ %C(blue)<%an>%Creset\\ %C(red)%d%Creset\\ %s"
+	lm = log --oneline --decorate --graph
 	summary = log --abbrev-commit --pretty=oneline --author="Ali.Bozorgzadeh" --since=last.mon --reverse
 
 	clone = clone --progress --verbose
@@ -79,6 +88,8 @@
 	p = add -p
 	patch = add -p
 
+	unstage = restore --staged
+
 	# requires Git 1.7.11.3 or later
 	reword = commit --amend --only -v --
 
@@ -90,9 +101,17 @@
 	# All ignored and untracked files are also stashed and then cleanedup with `git clean`.
 	stashall = stash --all
 
+	# git worktree add ../repo-review
+	#  git pr origin 189
+	#  git switch pr_189
+	# or
+	#  gh pr checkout 189
+	pr = "!f() { git fetch $1 refs/pull/$2/head:pr_$2;  } ; f"
+
 [user]
 	name = Ali Bozorgzadeh
-	email = 61201050+abzrg@users.noreply.github.com
+	email = abzrgzdh@gmail.com
+	signingkey = ~/.ssh/id_ed25519_git.pub
 
 [github]
 	user = abzrg
@@ -109,25 +128,52 @@
 	ui = true
 	grep = auto
 
-[color "diff-highlight"]
-	oldHighlight = red bold 238
-	newHighlight = green bold 238
+; [color "branch"]
+; 	; current = 74 236 italic
+; 	; local = 148
+; 	; worktree = 74
+; 	remote = 242
+; 	HEAD = magenta
+
+; [color "decorate"]
+; 	branch = cyan
+; 	HEAD = magenta
+
+[color "diff"]
+	; meta = 0 4
+	; frag = 0 14
+	; commit = yellow
+	; old = red; bold
+	; new = green; bold
+	whitespace = red reverse
+
+; [color "diff-highlight"]
+; 	oldHighlight = red bold 238
+; 	newHighlight = green bold 238
 
 [color "status"]
 	added = green
 	changed = red
 	untracked = blue
 
-; [interactive]
+[interactive]
 ;	singlekey = true
-;	diffFilter = diff-highlight
+	; diffFilter = diff-highlight
+	diffFilter = delta --color-only  # (delta)
 
 [pager]
 	show-branch = true
 	; status = true
 
+[delta]
+	navigate = true  # use n and N to move between diff sections
+	dark = true      # or light = true, or omit for auto-detection
+	; light = true
+	side-by-side = true
+	line-numbers = true
+
 [help]
-	autocorrect = 10
+	autocorrect = prompt # 10
 
 [rebase]
 	; Always pass --autosquash to rebase --interactive
@@ -135,12 +181,20 @@
 	; and rearranges the commits in the todo list automatically.
 	autosquash = true
 
+	; ????
+	; autoStash = true
+	updateRefs = true
+
 [merge]
+	ff = false
 	summary = true
 	tool = fugitive
 	# Adds a middle section, which is the code at the closest common parent in the commit tree
 	conflictStyle = diff3
 	log = 1000 #?
+
+	# (just 'diff3' if git version < 2.3)
+	conflictstyle = zdiff3  # (delta)
 
 [mergetool "fugitive"]
 	cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
@@ -149,18 +203,32 @@
 [pull]
 	rebase = true
 
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+
 [push]
-	# Only push the current branch (only if tracking is set up)
-	default = tracking
+; 	# Only push the current branch (only if tracking is set up)
+; 	default = upstream
+	default = simple
+	autoSetupRemote = true
+	followTags = true
 
 [branch]
-	autosetupmerge = always
-	autosetuprebase = local
-	sort = -committerdate  # show the branches that contain the latest commits first
+	autosetupmerge = always  # ?
+	autosetuprebase = local  # ?
+	sort = -committerdate    # show the branches that contain the latest commits first
+
+[tag]
+	sort = version:refname
 
 # ignored by Git older than 1.8.2
 [diff]
 	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
 	# Added in Git 2.9.0 (experimental): more readable diffs.
 	compactionHeuristic = true
 
@@ -182,13 +250,21 @@
 
 [status]
 	submodulesummary = true
+	; showUntrackedFiles = "all"
 
 # Signing commits with SSH
 [gpg]
 	format = ssh
 
 [commit]
+	verbose = true
+	# If you don't want to type the -S flag every time you commit
+	# git commit -S -m "My commit msg"
 	gpgsign = true
+
+[rerere]
+	enabled = true
+	autoupdate = true
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.ssh/allowed_signers
@@ -197,11 +273,20 @@
 [url "git@github.com:"]
 	insteadOf = "https://github.com/"
 
+[url "git@gitea.com:"]
+	insteadOf = "https://gitea.com/"
+
 [http]
 	# problem with cloning large repos
-	postBuffer = 524288000
+	; postBuffer = 524288000
 
 [include]
 	path = ~/.gitconfig_private
 
 # vim: noet ts=8 sw=8
+; [credential "https://github.com"]
+; 	helper = 
+; 	helper = !/opt/homebrew/bin/gh auth git-credential
+; [credential "https://gist.github.com"]
+; 	helper = 
+; 	helper = !/opt/homebrew/bin/gh auth git-credential
